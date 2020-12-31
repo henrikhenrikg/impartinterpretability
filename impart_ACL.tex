@@ -141,13 +141,68 @@ quantify the semantic similarity between languages
 %Word embeddings offer performance benefits in a variety of natural language processing (NLP) tasks including named entity recognition \citep{habibi2017deep,sienvcnik15NER} sentiment analysis \citep{tang2014learning,yu17sentiment}, semantic text similarity \citep{kenter15textSimilarity}. Moreover, e
 %Significant performance improvements in common NLP tasks along with utility in related domains led to growing popularity for word embedding models. 
 
-Despite extensive efforts in developing improved models \citep{yu2017refining, celikyilmaz15enriching, yu14improving, liu15learning, mrksic16counterFitting, bollegala16joint, yang16fineTuning}, a central limitation is the lack of interpretability for semantic concepts represented by individual dimensions of the dense vector spaces \citep{chen16InfoGAN,levy14dependency}. Generally, the learned embeddings make sense only in relation to each other and their specific dimensions cannot be interpreted explicitly. Interpretability is a highly desired trait for word embeddings for several reasons. Word embeddings serve as an initial stage in many deep learning models for NLP tasks, so their interpretability can be key to attaining interpretable deep learning models. The ability to interpret an embedding model would unravel the semantic concepts represented along the vector space dimensions. In turn, this information can be leveraged to remove redundant or irrelevant dimensions from the embedding model to optimize performance in a given task, reducing computation and memory requirements. This can also facilitate removal of unwanted biases from the embedding such as gender information \citep{dufter19ultraDense}. 
+Despite a large body of work on improved word embeddings
+\citep{yu2017refining, celikyilmaz15enriching,
+  yu14improving, liu15learning, mrksic16counterFitting,
+  bollegala16joint, yang16fineTuning}, a central limitation
+is their lack of interpretability: semantic concepts are not
+represented by individual dimensions of the dense vector
+space \citep{chen16InfoGAN,levy14dependency}.
+\enote{hs}{previous sentence: check that i didn't change
+  your intended meanign}
+\enote{hs}{below: what does it mean for two word embewddings
+  to make sense in relation to each other?}
+Standard word embeddings make sense only in relation to each
+other; individual dimensions cannot be interpreted.
+Yet interpretability of word embeddings is highly desired
+for several reasons. (i) Word embeddings serve
+as base representation in many deep learning models,
+so their interpretability is key for
+interpretable deep learning models.
+\enote{hs}{following sentence: ideally, you should say what
+  the benefit of ``unraveling semantic concoepts'' is. it
+  sounds a little bit like ``
+``The ability to interpret
+an embedding model would make the embeddings interpretable''
+(i.e., it's a tautology?)}
+(ii) The ability to interpret
+an embedding model would unravel the semantic concepts
+represented along the vector space dimensions.
+(iii) In interpretable embeddings models, it is easier
+to remove redundant or nonrelevant
+dimensions, resulting in reduced computation and memory
+requirements.
+(iv) Interpretability 
+also facilitates removal of
+gender, race and other biases
+\citep{dufter19ultraDense}.
 
 % Previous studies have put forth several important approaches to address limitations on interpretability of word embeddings. A group of studies proposed to use sparsity constraints such as non-negative matrix factorization \citep{murphy12nnse,luo15online,fyshe14interpretable}, sparse coding \citep{arora18linalg,faruqui15sparse} and sparse auto-encoders \citep{subramanian18spine} that yield sparse word representations. Since each word is represented by only a few dimensions, it is easier to understand what semantic features the dimensions capture.
 % However, larger vocabulary requires higher dimensionality to achieve a desired sparsity level which increases memory and computation requirements. Another group of studies proposed to instead use orthogonal transformations over the high performing dense embeddings \citep{zobnin17rotations,park17rotated,dufter19ultraDense} in order to preserve task performance. Yet, the level of improvement in interpretability that orthogonal transformations can achieve is relatively limited. 
-In a recent study, imparting approach was proposed to obtain interpretable word embeddings while still preserving internal semantic structure \citep{senel20impart}. The objective function of GloVe embedding algorithm \citep{pennington14glove} was modified to align each individual dimension of the vector space with a single pre-defined concept. However, this unidirectional imparting of embedding dimensions does not utilize the full capacity of the embedding space since negative directions are ignored. Moreover, generalizability of the imparting method beyond GloVe algorithm was not investigated.
+
+\enote{hs}{below: ``presevering internal semantic strucutre'' is not
+  defined. what does that mean? that similarities between
+  words are (roughly) the same as before?}
+
+In a recent study, the imparting approach was proposed to obtain
+interpretable word embeddings while still preserving
+internal semantic structure \citep{senel20impart}. The
+objective function of GloVe 
+\citep{pennington14glove} was modified to align each
+individual dimension of the vector space with a single
+pre-defined concept. However, this unidirectional imparting
+of embedding dimensions does not utilize the full capacity
+of the embedding space since negative directions are
+ignored. Moreover, generalizability of the imparting method
+beyond GloVe  was not
+investigated. \enote{hs}{bidirectionarlity is a clear
+  argument for novelty. ``generalizability of the imparting
+  method
+  beyond GloVe'' not so much -- sounds pretty weak. maybe
+  add 3-4 weaker differentiatros as an enumeratino?}
 
 In this study, we introduce a generalized imparting approach that is capable of online learning and bidirectional imparting. The proposed method utilizes both directions along each dimension of the vector space separately to encode two different concepts, which can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} - \textit{bad}, \textit{male} - \textit{female}) as a special case. Since our imparting method can encode any concept to any direction of any embedding dimension, it provides more efficient use of the embedding space while increasing encoding flexibility. The proposed method is demonstrated on the skip-gram model of the word2vec method \citep{mikolov13word2vec_a,mikolov13word2vec_b}, where several lexical resources are leveraged to select concepts. Specifically, Roget's Thesaurus and a more contemporary lexical database \textit{WordNet} are examined. The relative weighting of interpretability versus semantic structure is controlled by a parameter that is selected to optimize the trade-off between interpretability and task performance. Comprehensive experiments are performed to demonstrate improved interpretability for word embeddings, without significant performance loss. Performance is evaluated using intrinsic tests (i.e., word similarity and word analogy) as well as several downstream classification tasks. Inspired by the results in \citep{bolukbasi16debiasing}, we also demonstrate that bidirectional imparting can concentrate gender information in a single embedding dimension as a continuum. As a result, it enables efficient capture of gender bias and debiasing through removal of the relevant embedding dimension. 
+
 % \textcolor{black}{The main contributions of the current study are summarized below:}
 
 % \begin{itemize}
