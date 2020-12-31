@@ -99,13 +99,13 @@ Moreover, we adopt the imparting method for reducing gender bias in word embeddi
 \section{Introduction}\label{sec:intro}
 
 \emph{Word embeddings} \citep{mikolov13word2vec_a,mikolov13word2vec_b,pennington14glove,bojanowski2017enriching}
--- continuous dense vector representations of words --
+-- continuous dense vector representations --
 %are useful tools to (redundant with next sentence?)
 capture semantic and syntactic features
 of
 %language.
 words.
-They have been demonstrated to be useful in a broad range of
+They are useful in a broad range of
 applications involving lexical semantics. In
 neuroscience, they are employed to map
 semantic representations across cortex
@@ -145,15 +145,16 @@ Despite a large body of work on improved word embeddings
 \citep{yu2017refining, celikyilmaz15enriching,
   yu14improving, liu15learning, mrksic16counterFitting,
   bollegala16joint, yang16fineTuning}, a central limitation
-is their lack of interpretability: semantic concepts are not
-represented by individual dimensions of the dense vector
-space \citep{chen16InfoGAN,levy14dependency}.
+is their lack of interpretability: dimensions of the dense vector
+space do not individually represent semantic concepts
+\citep{chen16InfoGAN,levy14dependency} or other directly
+interpretable distinctions.
 \enote{hs}{previous sentence: check that i didn't change
   your intended meanign}
 \enote{hs}{below: what does it mean for two word embewddings
   to make sense in relation to each other?}
 Standard word embeddings make sense only in relation to each
-other; individual dimensions cannot be interpreted.
+other. % redudant: individual dimensions cannot be interpreted.
 Yet interpretability of word embeddings is highly desired
 for several reasons. (i) Word embeddings serve
 as base representation in many deep learning models,
@@ -168,7 +169,7 @@ an embedding model would make the embeddings interpretable''
 (ii) The ability to interpret
 an embedding model would unravel the semantic concepts
 represented along the vector space dimensions.
-(iii) In interpretable embeddings models, it is easier
+(iii) In interpretable embedding models, it is easier
 to remove redundant or nonrelevant
 dimensions, resulting in reduced computation and memory
 requirements.
