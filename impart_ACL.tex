@@ -72,6 +72,17 @@
 
 \date{}
 
+\newcounter{notecounter}
+\newcommand{\enotesoff}{\long\gdef\enote##1##2{}}
+\newcommand{\enoteson}{\long\gdef\enote##1##2{{
+      \stepcounter{notecounter}
+                  {\large\bf
+                    \hspace{1cm}\arabic{notecounter} $<<<$
+                    ##1: ##2
+                    $>>>$\hspace{1cm}}}}}
+\enoteson
+\enotesoff
+
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -87,11 +98,49 @@ Moreover, we adopt the imparting method for reducing gender bias in word embeddi
 
 \section{Introduction}\label{sec:intro}
 
-Continuous dense vector representations of words, i.e., \emph{word embeddings} \citep{mikolov13word2vec_a,mikolov13word2vec_b,pennington14glove,bojanowski2017enriching}, are useful tools to capture semantic and syntactic features of language. 
-%Word embeddings offer performance benefits in a variety of natural language processing (NLP) tasks including named entity recognition \citep{habibi2017deep,sienvcnik15NER} sentiment analysis \citep{tang2014learning,yu17sentiment}, semantic text similarity \citep{kenter15textSimilarity}. Moreover, e
-Embeddings have demonstrated use in a broad domain of applications that involve lexical semantics. In the neuroscience domain, they can be employed to map semantic representations across cortex \citep{ruan16brainActivity,huth16semanticMaps}, to develop a decoder that extracts linguistic meaning from measured brain activity \citep{pereira18universalDecoder}, or to detect incoherent speech for diagnosing schizophrenia \citep{iter2018automatic}. In the social domain, word and sentence embeddings can be used to analyze public polarization in social media \citep{demszky19analyzing}. In evolutionary linguistics, word embeddings enable tracking the history of changes in word meaning over the course of years \citep{hamilton16diachronic}. Recent studies suggest that embeddings also enable efficient capture and quantification of gender and ethnic stereotypes and biases in language \citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases} and their evolution across time \citep{agarwal2019word}. Embeddings can also be used to quantify the semantic similarity between different languages \citep{senel17crossLingual,senel18atlas}.
+\emph{Word embeddings} \citep{mikolov13word2vec_a,mikolov13word2vec_b,pennington14glove,bojanowski2017enriching}
+-- continuous dense vector representations of words --
+%are useful tools to (redundant with next sentence?)
+capture semantic and syntactic features
+of
+%language.
+words.
+They have been demonstrated to be useful in a broad range of
+applications involving lexical semantics. In
+neuroscience, they are employed to map
+semantic representations across cortex
+\enote{hs}{what does ``mapping across cortex'' mean?}
+\citep{ruan16brainActivity,huth16semanticMaps}, as part of a
+decoder that extracts linguistic meaning from measured brain
+activity \citep{pereira18universalDecoder} and to detect
+incoherent speech for diagnosing schizophrenia
+\citep{iter2018automatic}.
+\enote{hs}{is ``diagnosing schizophrenia'' really part of neuroscience?}
+In the social domain,
+polarization in social media \citep{demszky19analyzing} can
+be analyzed based on
+word and
+sentence embeddings
+\citep{demszky19analyzing}. 
+Evolutionary linguists track
+historical changes in word meaning
+with embeddings \citep{hamilton16diachronic}. Recent studies suggest
+that embeddings  capture and
+quantify  gender and ethnic
+%stereotypes and (redundant?)
+biases
+in language
+\citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases}
+and their evolution over time
+\citep{agarwal2019word}. Embeddings can also 
+quantify the semantic similarity between languages
+\citep{senel17crossLingual,senel18atlas}.
 
+\enote{hs}{what is the semantic semilarity between two alnguages?}
+
+%Word embeddings offer performance benefits in a variety of natural language processing (NLP) tasks including named entity recognition \citep{habibi2017deep,sienvcnik15NER} sentiment analysis \citep{tang2014learning,yu17sentiment}, semantic text similarity \citep{kenter15textSimilarity}. Moreover, e
 %Significant performance improvements in common NLP tasks along with utility in related domains led to growing popularity for word embedding models. 
+
 Despite extensive efforts in developing improved models \citep{yu2017refining, celikyilmaz15enriching, yu14improving, liu15learning, mrksic16counterFitting, bollegala16joint, yang16fineTuning}, a central limitation is the lack of interpretability for semantic concepts represented by individual dimensions of the dense vector spaces \citep{chen16InfoGAN,levy14dependency}. Generally, the learned embeddings make sense only in relation to each other and their specific dimensions cannot be interpreted explicitly. Interpretability is a highly desired trait for word embeddings for several reasons. Word embeddings serve as an initial stage in many deep learning models for NLP tasks, so their interpretability can be key to attaining interpretable deep learning models. The ability to interpret an embedding model would unravel the semantic concepts represented along the vector space dimensions. In turn, this information can be leveraged to remove redundant or irrelevant dimensions from the embedding model to optimize performance in a given task, reducing computation and memory requirements. This can also facilitate removal of unwanted biases from the embedding such as gender information \citep{dufter19ultraDense}. 
 
 % Previous studies have put forth several important approaches to address limitations on interpretability of word embeddings. A group of studies proposed to use sparsity constraints such as non-negative matrix factorization \citep{murphy12nnse,luo15online,fyshe14interpretable}, sparse coding \citep{arora18linalg,faruqui15sparse} and sparse auto-encoders \citep{subramanian18spine} that yield sparse word representations. Since each word is represented by only a few dimensions, it is easier to understand what semantic features the dimensions capture.
