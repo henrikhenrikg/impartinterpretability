@@ -39,12 +39,16 @@
 
 \newcommand{\argmax}[1]{\underset{#1}{\operatorname{arg}\,\operatorname{max}}\;}
 \newcommand{\argmin}[1]{\underset{#1}{\operatorname{arg}\,\operatorname{min}}\;}
+\usepackage{bbm}
+\usepackage{amsfonts}
 \newcommand{\indicator}{\ensuremath{\mathbbm{1}}}
 
 % This is not strictly necessary, and may be commented out,
 % but it will improve the layout of the manuscript,
 % and will typically save some space.
 \usepackage{microtype}
+
+
 
 %\aclfinalcopy % Uncomment this line for the final submission
 %\def\aclpaperid{***} %  Enter the acl Paper ID here
@@ -255,9 +259,7 @@ For occupation classification based on an embedding model, single words in a giv
 \begin{align}
 \begin{split}
     \label{eq:TPR}
-    \textcolor{black}{
     |Pr\{\hat{Y_o}=1|Y_o=1,A=`f\textrm'\} -\\ Pr\{\hat{Y_o}=1|Y_o=1,A=`m\textrm'\}|
-    }
 \end{split}
 \end{align}
 
