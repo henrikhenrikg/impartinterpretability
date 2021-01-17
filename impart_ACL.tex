@@ -81,7 +81,7 @@
                     ##1: ##2
                     $>>>$\hspace{1cm}}}}}
 \enoteson
-\enotesoff
+%\enotesoff
 
 \begin{document}
 \maketitle
@@ -100,46 +100,28 @@ Moreover, we adopt the imparting method for reducing gender bias in word embeddi
 
 \emph{Word embeddings} \citep{mikolov13word2vec_a,mikolov13word2vec_b,pennington14glove,bojanowski2017enriching}
 -- continuous dense vector representations --
-%are useful tools to (redundant with next sentence?)
 capture semantic and syntactic features
-of
-%language.
-words.
-They are useful in a broad range of
-applications involving lexical semantics. In
-neuroscience, they are employed to map
-semantic representations across cortex
+of words. 
+Although the remarkable performance of transformer based architectures \citep{vaswani17transformers,devlin19BERT,Radford19GPT2} on many NLP tasks moved the community towards the use contextualized embeddings, static word embeddings are still useful in a broad range of applications involving lexical semantics. 
+In neuroscience, they are employed to analyse the representation of semantics in brain
+activity
 \enote{hs}{what does ``mapping across cortex'' mean?}
-\citep{ruan16brainActivity,huth16semanticMaps}, as part of a
+\enote{ks}{I changed the sentence, is it more clear now?}
+\citep{ruan16brainActivity,huth16semanticMaps,zhang20connecting} and as part of a
 decoder that extracts linguistic meaning from measured brain
-activity \citep{pereira18universalDecoder} and to detect
-incoherent speech for diagnosing schizophrenia
+activity \citep{pereira18universalDecoder}. 
+In psychiatry and behavioral science, they are used to detect incoherent speech for diagnosing schizophrenia
 \citep{iter2018automatic}.
 \enote{hs}{is ``diagnosing schizophrenia'' really part of neuroscience?}
-In the social domain,
-polarization in social media \citep{demszky19analyzing} can
-be analyzed based on
-word and
-sentence embeddings
-\citep{demszky19analyzing}. 
-Evolutionary linguists track
-historical changes in word meaning
-with embeddings \citep{hamilton16diachronic}. Recent studies suggest
-that embeddings  capture and
-quantify  gender and ethnic
-%stereotypes and (redundant?)
-biases
-in language
-\citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases}
-and their evolution over time
-\citep{agarwal2019word}. Embeddings can also 
-quantify the semantic similarity between languages
+\enote{hs}{I changed it from neuroscience to psychiatry and behavioral science which hopefully makes more sense.}
+In the social domain, polarization in social media \citep{demszky19analyzing} can be analyzed based on word and sentence embeddings \citep{demszky19analyzing}. 
+Evolutionary linguists track historical changes in word meaning with embeddings \citep{hamilton16diachronic,kutuzov18diachronic}. 
+Recent studies suggest that embeddings  capture and quantify gender and ethnic biases in language \citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases} and their evolution over time \citep{agarwal2019word}. 
+Embeddings can also be used to investigate how differently/similarly concepts are represented in different languages
 \citep{senel17crossLingual,senel18atlas}.
 
-\enote{hs}{what is the semantic semilarity between two alnguages?}
-
-%Word embeddings offer performance benefits in a variety of natural language processing (NLP) tasks including named entity recognition \citep{habibi2017deep,sienvcnik15NER} sentiment analysis \citep{tang2014learning,yu17sentiment}, semantic text similarity \citep{kenter15textSimilarity}. Moreover, e
-%Significant performance improvements in common NLP tasks along with utility in related domains led to growing popularity for word embedding models. 
+\enote{hs}{what is the semantic similarity between two languages?}
+\enote{ks}{Is it more clear now?}
 
 Despite a large body of work on improved word embeddings
 \citep{yu2017refining, celikyilmaz15enriching,
@@ -149,45 +131,26 @@ is their lack of interpretability: dimensions of the dense vector
 space do not individually represent semantic concepts
 \citep{chen16InfoGAN,levy14dependency} or other directly
 interpretable distinctions.
-\enote{hs}{previous sentence: check that i didn't change
-  your intended meanign}
-\enote{hs}{below: what does it mean for two word embewddings
-  to make sense in relation to each other?}
-Standard word embeddings make sense only in relation to each
-other. % redudant: individual dimensions cannot be interpreted.
 Yet interpretability of word embeddings is highly desired
-for several reasons. (i) Word embeddings serve
-as base representation in many deep learning models,
-so their interpretability is key for
-interpretable deep learning models.
+for several reasons. 
+(i) It will enable researchers to make sense of embeddings of individual words which are currently meaningful only in relation to other embeddings 
+(ii) Word embeddings serve as base representation in many deep learning models, so their interpretability is key for interpretable deep learning models.
 \enote{hs}{following sentence: ideally, you should say what
   the benefit of ``unraveling semantic concoepts'' is. it
   sounds a little bit like ``
 ``The ability to interpret
 an embedding model would make the embeddings interpretable''
 (i.e., it's a tautology?)}
-(ii) The ability to interpret
-an embedding model would unravel the semantic concepts
-represented along the vector space dimensions.
-(iii) In interpretable embedding models, it is easier
-to remove redundant or nonrelevant
-dimensions, resulting in reduced computation and memory
-requirements.
-(iv) Interpretability 
-also facilitates removal of
-gender, race and other biases
-\citep{dufter19ultraDense}.
+\enote{ks}{I removed that sentence and added another sentence as first item, (i). Does this sentence make more sense or still sound like a tautology?}
+%  (ii) The ability to interpret an embedding model would unravel the semantic concepts represented along the vector space dimensions.
+(iii) In interpretable embedding models, it is easier to remove redundant or nonrelevant dimensions, resulting in reduced computation and memory requirements.
+(iv) Interpretability also facilitates removal of gender, race and other biases \citep{dufter19ultraDense}.
 
-% Previous studies have put forth several important approaches to address limitations on interpretability of word embeddings. A group of studies proposed to use sparsity constraints such as non-negative matrix factorization \citep{murphy12nnse,luo15online,fyshe14interpretable}, sparse coding \citep{arora18linalg,faruqui15sparse} and sparse auto-encoders \citep{subramanian18spine} that yield sparse word representations. Since each word is represented by only a few dimensions, it is easier to understand what semantic features the dimensions capture.
-% However, larger vocabulary requires higher dimensionality to achieve a desired sparsity level which increases memory and computation requirements. Another group of studies proposed to instead use orthogonal transformations over the high performing dense embeddings \citep{zobnin17rotations,park17rotated,dufter19ultraDense} in order to preserve task performance. Yet, the level of improvement in interpretability that orthogonal transformations can achieve is relatively limited. 
-
-\enote{hs}{below: ``presevering internal semantic strucutre'' is not
-  defined. what does that mean? that similarities between
-  words are (roughly) the same as before?}
-
+\enote{hs}{below: ``presevering internal semantic strucutre'' is not defined. what does that mean? that similarities between words are (roughly) the same as before?}
+\enote{ks}{Yes, I tried to clarify that}
 In a recent study, the imparting approach was proposed to obtain
-interpretable word embeddings while still preserving
-internal semantic structure \citep{senel20impart}. The
+interpretable word embeddings while still keeping
+the similarities between words mostly unchanged (i.e., semantic structure is preserved) \citep{senel20impart}. The
 objective function of GloVe 
 \citep{pennington14glove} was modified to align each
 individual dimension of the vector space with a single
@@ -196,29 +159,31 @@ of embedding dimensions does not utilize the full capacity
 of the embedding space since negative directions are
 ignored. Moreover, generalizability of the imparting method
 beyond GloVe  was not
-investigated. \enote{hs}{bidirectionarlity is a clear
+investigated. 
+
+\enote{hs}{bidirectionarlity is a clear
   argument for novelty. ``generalizability of the imparting
   method
   beyond GloVe'' not so much -- sounds pretty weak. maybe
   add 3-4 weaker differentiatros as an enumeratino?}
+\enote{ks}{I tried to divide the last paragraph into two paragraphs and structure them more fitting to ACL style. }
 
-In this study, we introduce a generalized imparting approach that is capable of online learning and bidirectional imparting. The proposed method utilizes both directions along each dimension of the vector space separately to encode two different concepts, which can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} - \textit{bad}, \textit{male} - \textit{female}) as a special case. Since our imparting method can encode any concept to any direction of any embedding dimension, it provides more efficient use of the embedding space while increasing encoding flexibility. The proposed method is demonstrated on the skip-gram model of the word2vec method \citep{mikolov13word2vec_a,mikolov13word2vec_b}, where several lexical resources are leveraged to select concepts. Specifically, Roget's Thesaurus and a more contemporary lexical database \textit{WordNet} are examined. The relative weighting of interpretability versus semantic structure is controlled by a parameter that is selected to optimize the trade-off between interpretability and task performance. Comprehensive experiments are performed to demonstrate improved interpretability for word embeddings, without significant performance loss. Performance is evaluated using intrinsic tests (i.e., word similarity and word analogy) as well as several downstream classification tasks. Inspired by the results in \citep{bolukbasi16debiasing}, we also demonstrate that bidirectional imparting can concentrate gender information in a single embedding dimension as a continuum. As a result, it enables efficient capture of gender bias and debiasing through removal of the relevant embedding dimension. 
+In this study, we introduce a generalized imparting approach that is capable of online learning and bidirectional imparting. 
+The proposed method utilizes both directions along each dimension of the vector space separately to encode two different concepts, which can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} - \textit{bad}, \textit{male} - \textit{female}) as a special case, providing a more efficient use of the embedding space while increasing encoding flexibility. 
+The proposed method is demonstrated on the skip-gram model of the word2vec method \citep{mikolov13word2vec_a,mikolov13word2vec_b}, where Roget's Thesaurus and \textit{WordNet} are leveraged to select concepts. 
+The relative weighting of interpretability versus semantic structure is controlled by a parameter that is selected to optimize the trade-off between interpretability and task performance. 
+Comprehensive experiments are performed to demonstrate improved interpretability for word embeddings, without significant performance loss. 
+Inspired by the results in \citep{bolukbasi16debiasing}, we also demonstrate that bidirectional imparting can concentrate gender information in a single embedding dimension as a continuum. 
+As a result, it enables efficient capture of gender bias and debiasing through removal of the relevant embedding dimension. 
 
-% \textcolor{black}{The main contributions of the current study are summarized below:}
-
-% \begin{itemize}
-%     \item \textcolor{black}{We provide the first demonstration of imparting to the word2vec model to achieve interpretable embedding models in an online algorithm without sacrificing task performance.}
-
-%     \item \textcolor{black}{We introduce for the first time a bidirectional imparting method that can encode arbitrary concepts to positive and negative directions of embedding dimensions.}
-
-%     \item \textcolor{black}{We demonstrate that the bidirectional imparting of arbitrary concepts offers superior performance compared to encoding of polar opposites to each embedding dimension, in terms of interpretability, intrinsic and downstream evaluation tasks.}
-
-%     \item \textcolor{black}{We propose for the first time an imparting method to concentrate gender information to a designated embedding dimension, along with a hybrid method that achieves concurrent gender and interpretability imparting.}
-
-%     \item \textcolor{black}{We demonstrate that gender-imparted embedding models improve performance of gender debiasing methods, in terms of gender bias metrics  and high-level evaluation tasks.}
-% \end{itemize}
-
-% The organization of the paper is as follows: In Section \ref{sec:related},  we discuss previous studies focusing on interpretability of word embeddings. In Section \ref{sec:methods}, introduce the proposed generalized imparting method and a new interpretability metric. We also describe the application of imparting for gender debiasing in the same section. We present our results in Section \ref{sec:results} and finally, we conclude the paper in Section \ref{sec:concl}.
+Our main contributions are as follows:
+\begin{itemize}
+    \item We propose a bidirectional imparting algorithm that utilizes both directions of each embedding dimension separately to encode different concepts.
+    
+    \item We perform comprehensive evaluations and provide comparisons with the previous work, showing that bidirectional imparting achieves a greater interpretability than alternatives without sacrificing performance. 
+    
+    \item We utilize bidirectional imparting to create a gender dimension, we show that this dimension effectively captures gender information and improves the performance of the debiasing methods.
+\end{itemize}
 
 \section{Related Work} \label{sec:related}
 
