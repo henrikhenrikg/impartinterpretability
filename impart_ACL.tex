@@ -83,7 +83,9 @@
                     ##1: ##2
                     $>>>$\hspace{1cm}}}}}
 \enoteson
-%\enotesoff
+\enotesoff
+
+\def\proposedmethod{ImpBi}
 
 \begin{document}
 \maketitle
@@ -208,8 +210,15 @@ The authors demonstrated the effectiveness of their method only for the off-line
 
 \subsection{Generalized Bidirectional Imparting }
 \label{sec:gen_imparting}
-\citep{senel20impart} introduced a
-unidirectional method   by modifying the cost function of  GloVe  to align predefined concepts (i.e., word-groups) with individual embedding dimensions. This modified cost is given as:
+
+\citet{senel20impart} introduced a
+unidirectional imparting method   that
+enhances interpretability in GloVe word
+embeddings by forcing words related to predefined concepts
+to project more strongly onto individual embedding
+dimensions.
+To achieve this, they modified the GloVe cost as follows:
+
 \begin{align}
 \begin{split}
 	 &\sum_{i,j=1}^{V} f(X_{ij}) \Bigg[ \left(\vec{w}_i^T\vec{\tilde{w}}_j + b_i + \tilde{b}_j -\log{}X_{ij}\right)^2 \\
@@ -256,10 +265,8 @@ negative samples and $P_n(w)$ is the unigram distribution
 %of the updates during training.
 % Although the additional terms in \eqref{eq:glove_uni} and \eqref{eq:word2vec_uni} look identical, throughout the training process, their relative influence over the original embedding loss can be significantly different. To account for these differences, different weighting factors $k^g$ and $k^w$ are defined.  
 
-Imparting achieves enhanced interpretability in word
-embeddings by enforcing words related to predefined concepts
-to project more strongly onto individual embedding
-dimensions. However, imparting was previously only performed
+
+Imparting was previously only performed
 for the positive direction of embedding dimensions.
 %As discussed in \citep{senel18semanticStructure},
 But negative directions are equally suitable to encode semantic, interpretable concepts. Based on this argument, in this study, we extend the imparting method to both directions of the embedding dimensions. 
@@ -339,36 +346,111 @@ we constructed two word-groups corresponding to
 \citep{bolukbasi16debiasing}'s gender-specific word list. 
 %This list consists of 218 gender specific words ($S$) that are obtained using the word definitions in WordNet \citep{miller95wordnet}. 
 
-Bolukbasi et al \citep{bolukbasi16debiasing} proposed two different metrics to assess level of gender bias in word embeddings, namely direct bias and indirect bias. Here, we use the direct bias metric given as:
+Bolukbasi et al \citep{bolukbasi16debiasing} proposed two different metrics to assess level of gender bias in word embeddings, namely direct bias and indirect bias. Here, we use the direct bias metric:
 \begin{equation}
 b^{direct}_\kappa = \frac{1}{|N|}\sum_{w\in N}|\cos(\vec{w},g)|^\kappa
 \label{eq:direct_bias}
 \end{equation}
-where $N$ is the set of gender neutral words, $|N|$ denotes the cardinality of $N$, $g$ is the gender vector calculated as $g = w_{she} - w_{he}$ and $\kappa$ is a parameter that controls the relative weighting of high-versus-low bias levels ($\kappa$ is taken as 1 for all measurements). Gender neutral words were obtained by taking the complement of the gender specific words $S$ such that $N = W$\textbackslash $S$ where $W$ is the set of all words. 
+where $N$ is the set of gender neutral words,
+%$|N|$ denotes
+%the cardinality of $N$,
+$g= w_{she} - w_{he}$ is the gender vector
+and $\kappa$ is a parameter that
+controls the relative weighting of high vs.\ low bias
+levels; we set $\kappa=1$. Gender
+neutral words were obtained by taking the complement of the
+gender specific words $S$ such that $N = W$\textbackslash
+$S$ where $W$ is the set of all words.
 
-To examine the quality of the gender dimension constructed by the imparting method, we leveraged the gender-bias dataset ($P$) provided in \citep{bolukbasi16debiasing}. This dataset contains definitional and stereotypical gender bias levels of 291 professions that are obtained by human assessments\footnote{https://github.com/tolga-b/debiaswe/blob/master/data/professions.json\\Professions that were not in our vocabulary were filtered out.}. We calculated the correlation between the stereotypical biases of the professions, $b^s$, from this dataset and biases from the gender dimension, $b^{gd}$, (i.e., $ B^{gd} = corr(b^s, b^{gd})$) for three independent runs of the imparting method. $b^{gd}$ was calculated as: 
+To examine the quality of the gender dimension constructed
+by the imparting method, we leverage the gender-bias
+dataset $P$ provided by \citet{bolukbasi16debiasing}. This
+dataset contains definitional and stereotypical gender bias
+levels of 291 professions that are obtained by human
+assessments.\footnote{https://github.com/tolga-b/debiaswe/blob/master/data/professions.json\\Professions
+  that were not in our vocabulary were filtered out.} We
+calculate the correlation $B^{gd}$ between the stereotypical biases
+$b^s \in P$  and the biases
+$b^{gd}$ from
+the gender dimension. $b^{gd}$ is calculated as:
+\enote{hs}{below: how did you come up with this? what is the
+  purpose of the min?}
 \begin{align}
 \begin{split}
      b^{gd}_p = 
      \begin{cases}
-		~~min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
-		-min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
+		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
+		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
 	\end{cases}
 \end{split}
 \label{eq:measure_bias}
 \end{align}
-where $\mu_m$ and $\mu_f$ are the average values of the words in the \textit{male} and \textit{female} word-groups in the gender dimension ($gd$), respectively. $w_p$ stands for the value of the $p^{th}$ profession in the gender dimension and $b^{gd}_p$ represents the bias value of $p^{th}$ profession calculated from gender dimension. The resulting correlation indicates how well the gender dimension captures stereotypical bias. We also calculated the correlation of stereotypical bias with the direct bias metric \eqref{eq:direct_bias} for comparison, $B^g = corr(b^s, b^{direct})$.
+where $\mu_m$ and $\mu_f$ are the average values of the
+words in the \textit{male} and \textit{female} word-groups
+in the gender dimension ($gd$), respectively. $w_p$ stands
+for the value of the $p^{th}$ profession in the gender
+dimension and $b^{gd}_p$ represents the bias value of
+$p^{th}$ profession calculated from gender
+dimension. $B^{gd}$ indicates how well the gender dimension
+captures stereotypical bias. We also calculate the
+correlation $B^g$ of $b^s \in P$  with the direct bias metric
+$b^{direct}$in \eqref{eq:direct_bias} for comparison.
+
+\enote{hs}{put this in the experimental section:
+
+for three independent runs of the imparting
+method.
+
+}
+
 
 % \subsubsection{Reducing Gender Bias}
 
-Bolukbasi et al. \citep{bolukbasi16debiasing} also proposed two methods for gender debiasing: namely \textit{hard-debiasing (neutralize and equalize)}, and \textit{soft-bias correction}. Here, we consider the hard-debiasing method and employ a two-stage approach for reducing gender bias in gender imparted embedding models. First, we remove the gender dimension from the embedding model to cancel gender bias as suggested in \citep{dufter19ultraDense}. Next, we perform hard-debiasing as described in \citep{bolukbasi16debiasing} on the reduced embedding model.
+\enote{hs}{below: why? what is the intuition? why do you do both?}
+
+Our gender debiasing method consists of two steps.
+(i) We remove the gender dimension from the embeddings
+(cf.\ \citep{dufter19ultraDense}). (ii)
+We perform hard debiasing
+\citep{bolukbasi16debiasing} on the reduced
+embeddings.
+
 % , where the gender subspace is first identified via principal component analysis (PCA). To do this, difference between word vectors of ten pairs of gender words (i.e., female-male, she-he, girl-boy, etc.) were computed, and PCA was then performed on these 10 difference vectors. The PC with the largest eigenvalue predominantly captured variance among the difference vectors (around 60\% of total variance), suggesting that gender bias primarily lies along a single direction in the embedding space. In the \textit{neutralize} stage, vectors for the gender-neutral words were updated to ensure that their projection onto the first PC (i.e., gender subspace) is zero. Equality sets were then defined where each set contains a gender pair such as \{men, women\}. In the \textit{equalize} stage, vectors of the words in the equality sets were updated such that the gender pair in each set becomes equidistant to the gender subspace. Therefore, following the equalization stage, each gender-neutral word became equidistant to both \textit{men} and \textit{women} vectors. 
 
 \subsubsection{Bias in Classification}
 
-A recent study \citep{prost19biasTextClassif} argues that lower gender bias levels as measured via the metric in \eqref{eq:direct_bias} may not always translate to reduced gender bias in high-level classification tasks. Therefore, to demonstrate the utility of the proposed gender-imparting method, we performed evaluations on the \textit{BiosBias} dataset \citep{de19biosbias}. A total of 397,907 biographies posted on Common Crawl from 2014 to 2018 were extracted \citep{de19biosbias}. Each biography contained a binary gender information (male or female) and belonged to one of 28 different occupations. The high-level task was to classify each subject's occupation given their biography. Data were split randomly into 258,640 training, 39,790 validation and 99,477 test samples.
+\citet{prost19biasTextClassif} argue that lower gender bias
+levels as measured by metric  \eqref{eq:direct_bias}
+do not always translate to reduced gender bias in
+classification. We therefore also
+evaluate on \textit{BiosBias} 
+\citep{de19biosbias}, a classification dataset of 397,907 biographies
+extracted from
+CommonCrawl.
+Each biography is annotated as male or female and as being
+one
+of 
+28 different occupations. The high-level task is to
+classify each subject's occupation given their
+biography.
+The train/dev/test split is 
+258,640/39,790/99,477.
 
-For occupation classification based on an embedding model, single words in a given biography were first projected to the embedding space. Each biography was thereby represented as the average vector of words within the biography. A linear classifier with softmax output was used, and hyperparameters were tuned based on validation set performance. Performance was taken as classification accuracy. As a latent measure of gender bias in embedding models, fairness of the classifier to the two genders was examined as described in \citep{hardt16equality} as equality of opportunity. Specifically, we measured the True Positive Rate Gender Gap ($\text{TPR}_{\text{gap}}$) and True Negative Rate Gender Gap ($\text{TNR}_{\text{gap}}$) for the classifier. $\text{TPR}_{\text{gap}}$ for a given occupation is measured as
+For occupation classification based on an embedding model,
+single words in a given biography were first projected to
+the embedding space. Each biography was thereby represented
+as the average vector of words within the biography. A
+linear classifier with softmax output was used, and
+hyperparameters were tuned based on validation set
+performance. Performance was taken as classification
+accuracy. As a latent measure of gender bias in embedding
+models, fairness of the classifier to the two genders was
+examined as described in \citep{hardt16equality} as equality
+of opportunity. Specifically, we measured the True Positive
+Rate Gender Gap ($\text{TPR}_{\text{gap}}$) and True
+Negative Rate Gender Gap ($\text{TNR}_{\text{gap}}$) for the
+classifier. $\text{TPR}_{\text{gap}}$ for a given occupation
+is measured as
 \begin{align}
 \begin{split}
     \label{eq:TPR}
@@ -382,21 +464,65 @@ For occupation classification based on an embedding model, single words in a giv
 
 \subsection{Interpretability Enhancement}
 
-To demonstrate improved representational capacity of the proposed method, we constructed 300 and 600 word-groups from Roget's Thesaurus and WordNet for bidirectional imparting (see \ref{app:lexical_resources} for details). 
+We constructed 300 (resp.\ 600) word-groups from Roget's
+Thesaurus (resp.\ WordNet) for bidirectional imparting: see \ref{app:lexical_resources} for details. 
 % For the paired word-group sets extracted from Roget's Thesaurus and WordNet (i.e., word-groups corresponding to opposite directions of the same dimension), the word-group selections were arranged such that no overlapping words appeared in a given word-group pair.
-We, then, trained the word2vec algorithm with bidirectional imparting using Roget and WordNet word-groups separately on English Wikipedia for various $k^w$ values that yielded 300 dimensional embeddings (see \ref{app:training_parameters} for hyper-parameters). We additionally trained the original word2vec algorithm without imparting on the same corpus. 
+Our corpus is the English Wikipedia.
+We then train two sets of 300-dimensional word2vec vectors with bidirectional imparting using
+the two word-groups separately for
+different $k^w$ values (Eq.\ 
+\ref{eq:word2vec_bi}); see \ref{app:training_parameters} for hyper-parameters. We additionally train word2vec vectors without imparting.
 
-We compared the resulting imparted embeddings in terms of interpretability, measured by \eqref{eq:interpretability_new}, and intrinsic performance, based on word similarity\footnote{Word similarity results were averaged across 13 datasets: WS-353-ALL, SIMLEX-999, VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130, MEN-TR-3k, RG-65, MTurk-771, WS-353-SIM, MC-30, MTurk-287} \citep{faruqui14communityEval} and word analogy\footnote{http://download.tensorflow.org/data/questions-words.txt} \citep{mikolov13word2vec_b} tests (see \ref{app:impart_comparison} for the detailed results). Based on our evaluations, bidirectional imparting of WordNet word-groups (WordNet-Bi) offered the best trade-off between interpretability and performance. Therefore, we focus on WordNet-Bi for subsequent experiments and comparing it against competing methods from the literature. 
+We compare the resulting imparted embeddings in terms of
+interpretability, measured by
+\eqref{eq:interpretability_new}, and intrinsic performance,
+based on word similarity\footnote{Word similarity results
+  were averaged across 13 datasets: WS-353-ALL, SIMLEX-999,
+  VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130,
+  MEN-TR-3k, RG-65, MTurk-771, WS-353-SIM, MC-30, MTurk-287}
+\citep{faruqui14communityEval} and word
+analogy\footnote{http://download.tensorflow.org/data/questions-words.txt}
+\citep{mikolov13word2vec_b} tests (see
+\ref{app:impart_comparison} for the detailed results). Based
+on our evaluations, bidirectional imparting of WordNet
+word-groups (WordNet-Bi) offered the best trade-off between
+interpretability and performance. Therefore, we focus on
+WordNet-Bi for subsequent experiments and comparing it
+against competing methods from the literature.
 
 %%% KS: I am not sure if it okay not to share any comparison in the main paper and only refer to the appendix. I did this because the result figures take a lot of space.
 
-\subsubsection{Interpretability Comparison with Alternatives}
+\subsubsection{Interpretability Comparison}
+We compare \proposedmethod{}
+with five state-of-the-art methods for interpretability
+enhancement: OIWE-IPG \citep{luo15online}, SOV
+\citep{faruqui15sparse}, Parsimax \citep{park17rotated},
+Word2Sense \citep{panigrahi19word2sense} and POLAR
+\citep{mathew20polar} (see \ref{app:competing_methods} for
+details).
+We do not consider
+SPINE \citep{subramanian18spine}  because it scaled poorly
+for the large vocabularies we use in our study.
 
-The proposed method was demonstrated by comparison against \textcolor{black}{five} state-of-the-art competing methods for interpretability enhancement, namely OIWE-IPG \citep{luo15online}, SOV \citep{faruqui15sparse}, Parsimax \citep{park17rotated}, Word2Sense \citep{panigrahi19word2sense} and POLAR \citep{mathew20polar} (see \ref{app:competing_methods} for details). The SPINE \citep{subramanian18spine} method was not considered because it was observed to scale poorly for large vocabulary as evaluated here. 
+Table
+\ref{tab:interp_results} presents the interpretability
+levels of \proposedmethod{} for $k^w \in \{0.1, 0.2, 1\}$,
+OIWE-IPG, SOV, Parsimax, Word2Sense, POLAR$_{small}$ and
+POLAR$_{large}$ along with the original word2vec embeddings
+in positive and negative directions separately for $n_{min}
+= 5$.  Note that non-negative embeddings inherently do not
+have any interpretability in the negative
+direction. Bidirectionally imparted embeddings are
+significantly more interpretable in the negative direction
+compared to the alternatives, even for limited $k^w$ values
+($k^w = 0.1$). In the positive direction, interpretability
+of bidirectional imparting is comparable with OIWE-IPG and
+Word2Sense and is higher than the other alternatives for
+limited $k^w$. For greater $k^w$, interpretability of
+bidirectional imparting is substantially higher than all the
+alternatives.
 
-The competing methods were compared in terms of the interpretability of resulting word embeddings. Table \ref{tab:interp_results} presents the interpretability levels of WordNet-Bi for $k^w \in \{0.1, 0.2, 1\}$, OIWE-IPG, SOV, Parsimax, Word2Sense, POLAR$_{small}$ and POLAR$_{large}$ along with the original word2vec embeddings in positive and negative directions separately for $n_{min} = 5$.
 %and $n_{min} = 10$. 
-Note that non-negative embeddings inherently do not have any interpretability in the negative direction. Bidirectionally imparted embeddings are significantly more interpretable in the negative direction compared to the alternatives, even for limited $k^w$ values ($k^w = 0.1$). In the positive direction, interpretability of bidirectional imparting is comparable with OIWE-IPG and Word2Sense and is higher than the other alternatives for limited $k^w$. For greater $k^w$, interpretability of bidirectional imparting is substantially higher than all the alternatives.
 
 \begin{table}
     \centering
