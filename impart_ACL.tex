@@ -1,6 +1,7 @@
 %
-% File acl2020.tex
+% File acl2021.tex
 %
+%% Based on the style files for EMNLP 2020, which were
 %% Based on the style files for ACL 2020, which were
 %% Based on the style files for ACL 2018, NAACL 2018/19, which were
 %% Based on the style files for ACL-2015, with some improvements
@@ -13,10 +14,26 @@
 %% and that of ACL 08 by Joakim Nivre and Noah Smith
 
 \documentclass[11pt,a4paper]{article}
-\usepackage[hyperref]{acl2020}
+\usepackage[hyperref]{acl2021}
 \usepackage{times}
 \usepackage{latexsym}
 \renewcommand{\UrlFont}{\ttfamily\small}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% \aclfinalcopy % Uncomment this line for the final submission
+%\def\aclpaperid{***} %  Enter the acl Paper ID here
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\newcommand\BibTeX{B\textsc{ib}\TeX}
 
 \usepackage[utf8]{inputenc}
 
@@ -43,23 +60,8 @@
 \usepackage{amsfonts}
 \newcommand{\indicator}{\ensuremath{\mathbbm{1}}}
 
-% This is not strictly necessary, and may be commented out,
-% but it will improve the layout of the manuscript,
-% and will typically save some space.
-\usepackage{microtype}
 
 
-
-%\aclfinalcopy % Uncomment this line for the final submission
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
-
-%\setlength\titlebox{5cm}
-% You can expand the titlebox if you need extra space
-% to show all the authors. Please do not make the titlebox
-% smaller than 5cm (the original size); we will check this
-% in the camera-ready version and ask you to change it back.
-
-\newcommand\BibTeX{B\textsc{ib}\TeX}
 
 \title{Bidirectional imparting of word embeddings for interpretability enhancement and gender debiasing}
 
@@ -86,14 +88,12 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Word embeddings, which enable mapping of semantic properties of words into a dense vector space, typically suffer from poor interpretability -- a general deficiency in many neural learning models. 
+Word embeddings, which enable mapping of semantic properties of words into a dense vector space, typically suffer from poor interpretability -- a general deficiency in many neural learning models. 
 Here, we propose a generalized method for aligning embedding dimensions with concepts during the learning phase to impart interpretability while preserving the inherent semantic structure. 
 The proposed method separately utilizes both directions of each vector space dimension to increase the number of imparted concepts.
 Experiments are performed on the scalable \textit{word2vec} algorithm.
-% while concepts are extracted from two different lexical resources, Roget's Thesaurus and \textit{WordNet}, to demonstrate generalizability. 
 Comprehensive demonstrations clearly indicate that bidirectional imparting allows for higher interpretability without sacrificing performance evaluated on intrinsic tests as well as several downstream classification tasks.
 Moreover, we adopt the imparting method for reducing gender bias in word embedding models. Specifically, we show that efficacy of current debiasing methods can be enhanced by encoding gender opposite concepts (e.g., male-female) in a single embedding dimension as evaluated using intrinsic bias evaluations as well as fairness measurements for high level classification tasks.
-%Finally, we introduce a hybrid gender- and interpretability-imparted model that simultaneously achieves gender debiasing and interpretability without compromising task performance.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -108,23 +108,16 @@ architectures
 many NLP tasks has increased the use use of contextualized embeddings, static word embeddings are still useful in a broad range of applications involving lexical semantics. 
 In neuroscience, they are employed to analyze the representation of semantics in brain
 activity
-\enote{hs}{what does ``mapping across cortex'' mean?}
-\enote{ks}{I changed the sentence, is it more clear now?}
 \citep{ruan16brainActivity,huth16semanticMaps,zhang20connecting} and as part of a
 decoder that extracts linguistic meaning from measured brain
 activity \citep{pereira18universalDecoder}. 
 In psychiatry and behavioral science, they are used to detect incoherent speech for diagnosing schizophrenia
 \citep{iter2018automatic}.
-\enote{hs}{is ``diagnosing schizophrenia'' really part of neuroscience?}
-\enote{hs}{I changed it from neuroscience to psychiatry and behavioral science which hopefully makes more sense.}
 In the social domain, polarization in social media \citep{demszky19analyzing} can be analyzed based on word and sentence embeddings \citep{demszky19analyzing}. 
 Evolutionary linguists track historical changes in word meaning with embeddings \citep{hamilton16diachronic,kutuzov18diachronic}. 
 Recent studies suggest that embeddings  capture and quantify gender and ethnic biases in language \citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases} and their evolution over time \citep{agarwal2019word}. 
 Embeddings can also be used to investigate how differently/similarly concepts are represented in different languages
 \citep{senel17crossLingual,senel18atlas}.
-
-\enote{hs}{what is the semantic similarity between two languages?}
-\enote{ks}{Is it more clear now?}
 
 Despite a large body of work on improved word embeddings
 \citep{yu2017refining, celikyilmaz15enriching,
@@ -139,19 +132,10 @@ for several reasons.
 (i) It will enable researchers to make sense of embeddings
 of individual words,  which are currently meaningful only in relation to other embeddings 
 (ii) Word embeddings serve as base representation in many deep learning models, so their interpretability is key for interpretable deep learning models.
-\enote{hs}{following sentence: ideally, you should say what
-  the benefit of ``unraveling semantic concoepts'' is. it
-  sounds a little bit like ``
-``The ability to interpret
-an embedding model would make the embeddings interpretable''
-(i.e., it's a tautology?)}
-\enote{ks}{I removed that sentence and added another sentence as first item, (i). Does this sentence make more sense or still sound like a tautology?}
 %  (ii) The ability to interpret an embedding model would unravel the semantic concepts represented along the vector space dimensions.
 (iii) In interpretable embedding models, it is easier to remove redundant or nonrelevant dimensions, resulting in reduced computation and memory requirements.
 (iv) Interpretability also facilitates removal of gender, race and other biases \citep{dufter19ultraDense}.
 
-\enote{hs}{below: ``presevering internal semantic strucutre'' is not defined. what does that mean? that similarities between words are (roughly) the same as before?}
-\enote{ks}{Yes, I tried to clarify that}
 In a recent study  \citep{senel20impart}, the imparting approach was proposed to obtain
 interpretable word embeddings while still keeping
 the similarities between words mostly unchanged (i.e., semantic structure is preserved). The
@@ -164,13 +148,6 @@ of the embedding space since negative directions are
 ignored. Moreover, generalizability of the imparting method
 beyond GloVe  was not
 investigated. 
-
-\enote{hs}{bidirectionarlity is a clear
-  argument for novelty. ``generalizability of the imparting
-  method
-  beyond GloVe'' not so much -- sounds pretty weak. maybe
-  add 3-4 weaker differentiatros as an enumeratino?}
-\enote{ks}{I tried to divide the last paragraph into two paragraphs and structure them more fitting to ACL style. }
 
 In this study, we introduce a generalized imparting approach that is capable of online learning and bidirectional imparting. 
 The proposed method utilizes both directions along each dimension of the vector space separately to encode two different concepts, which can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} - \textit{bad}, \textit{male} - \textit{female}) as a special case, providing a more efficient use of the embedding space while increasing encoding flexibility. 
@@ -260,7 +237,7 @@ In this study, we propose a generalized imparting framework that is capable of o
 % A significant difference between word2vec and GloVe algorithms is that word2vec does not require a global co-occurrence matrix. Rather, it updates word vectors in an online manner by sliding a window through the corpus. In the word2vec algorithm, word vectors $\vec{w}_{i}$ and $\vec{w}_{j}$ are updated whenever $j^{th}$ word occurs in $i^{th}$ word's context as the algorithm iterates over the corpus. Therefore, the training process of the word2vec algorithm consists of many small and noisy updates. On the other hand, in the GloVe algorithm, iterations are performed over the weighted global cooccurrence matrix and word vectors $\vec{w}_{i}$ and $\vec{w}_{j}$ are updated only once in an epoch based on their cooccurrence, but the magnitude of the update depends on their overall cooccurrence count. Therefore, GloVe consists of fewer, but less noisy updates compared to word2vec.
 Although the learning mechanisms of GloVe and word2vec are
 different, unidirectional imparting can still be implemented
-by the following modified objective: \enote{hs}{maximize?}
+by maximizing the following modified objective:
 \begin{align}
 \begin{split}
 \log ~ & \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
@@ -277,11 +254,7 @@ negative samples and $P_n(w)$ is the unigram distribution
 %$c^{th}$ group, $k_w$ controls the relative weighting of
 %the second term, and function $g(\cdot)$, adjusts the size
 %of the updates during training.
-
-\enote{hs}{
-Although the additional terms in \eqref{eq:glove_uni} and \eqref{eq:word2vec_uni} look identical, throughout the training process, their relative influence over the original embedding loss can be significantly different. To account for these differences, different weighting factors $k^g$ and $k^w$ are defined.  
-
-not necessary? discuss}
+% Although the additional terms in \eqref{eq:glove_uni} and \eqref{eq:word2vec_uni} look identical, throughout the training process, their relative influence over the original embedding loss can be significantly different. To account for these differences, different weighting factors $k^g$ and $k^w$ are defined.  
 
 Imparting achieves enhanced interpretability in word
 embeddings by enforcing words related to predefined concepts
@@ -290,8 +263,6 @@ dimensions. However, imparting was previously only performed
 for the positive direction of embedding dimensions.
 %As discussed in \citep{senel18semanticStructure},
 But negative directions are equally suitable to encode semantic, interpretable concepts. Based on this argument, in this study, we extend the imparting method to both directions of the embedding dimensions. 
-%\textit{Bidirectional imparting} allows us to double the number of concepts that can be encoded. 
-%Although one can double the embedding dimension for the unidirectional case to cover same number of concepts, this will increase model complexity and unnecessarily cause additional computational costs. 
 Given a fixed number for embedding dimensions, \textit{bidirectional imparting} doubles the concept capacity compared to the unidirectional case. Moreover, by encoding opposite concepts such as \textit{good} and \textit{bad} or \textit{male} and \textit{female} to opposing directions of the same dimension, these concepts can be represented in a continuum.
 
 The proposed objective for the bidirectionally imparted word2vec model is as follows:
@@ -325,35 +296,25 @@ until all word-groups are paired.\footnote{For cases when
 \subsection{Interpretability Evaluation}
 \label{sec:interp_eval}
 
-% Interpretability of word embeddings is traditionally evaluated using the \textit{word intrusion} test \citep{chang09wordintrusion}. In this test, for a given embedding dimension, human evaluators are asked to distinguish an intruder word that is randomly selected from the lower half of the dimension (and is also among the top 10\% in another dimension) from the top 5 words in that dimension. In practice, the word intrusion test suffers from heavy experimental burden and limited reproducibility, especially for embedding models with hundreds of dimensions. Therefore, an alternative automated method was used in \citep{senel20impart} to measure interpretability based on a pre-defined collection of word categories, SEMCAT \citep{senel18semanticStructure}, that has been shown to correlate well with evaluations based on word intrusion \citep{senel20impart}. This method is extended to consider subcategories in \citep{senel18trInterpret}.
-
-\enote{hs}{dangerous!}
-Interpretability of word embeddings is traditionally evaluated using the \textit{word intrusion} test \citep{chang09wordintrusion}.
-Due to its advantages over word intrusion tests in terms of
-scalability and reproducibility, here we adapt the
-interpretability evaluation based on SEMCAT categories
-\citep{senel18semanticStructure}. However, the
-interpretability metric that is introduced in
-\citet{senel18semanticStructure} and later improved in
-\citet{senel18trInterpret}, cannot capture the difference
+In order to evaluate the interpretability of word embeddings, here we adapt the evaluation based on SEMCAT categories
+\citep{senel18semanticStructure} and subcategories \citep{senel18trInterpret}. SEMCAT (sub)categories are taken as an approximation for the semantic concepts that humans can use to interpret embedding dimensions. Interpretability score is, then, calculated based on how strongly these categories are represented in embedding dimensions. This metric is low-cost, fast, reproducible and shown to correlate well with human judgement \citep{senel20impart}. However, it cannot capture the difference
 between interpretability changes in the positive and
 negative directions of an embedding dimension, because it
 performs maximum pooling over the opposite directions of
-each dimension. To capture  this information, here we
-propose a new directional interpretability metric:
-\enote{hs}{formula wrong?}
-\enote{hs}{need to explain intuition}
+each dimension. To capture this information, here we
+propose a new, directional interpretability metric:
+
 \begin{equation} \label{eq:interpretability_new}
 \begin{split}
-&IS^+_{l,k} = \max_{n_{min} \leq n \leq n_c } \frac{|S_c \cap V^+_l(\lambda \times n)|}{n} \times 100  \\
-&IS^-_{l,k} = \max_{n_{min} \leq n \leq n_c } \frac{|S_c \cap V^-_l(\lambda \times n)|}{n} \times 100  \\
+&IS^+_{l,k} = \max_{n_{min} \leq n \leq n_k } \frac{|S_k \cap V^+_l(\lambda \times n)|}{n} \times 100  \\
+&IS^-_{l,k} = \max_{n_{min} \leq n \leq n_k } \frac{|S_k \cap V^-_l(\lambda \times n)|}{n} \times 100  \\
 &IS^+_{l} = \max_{k} IS^+_{l,k}, ~~ IS^-_{l} = \max_{k} IS^-_{l,k},\\
 &IS^+ = \frac{1}{D}\sum\limits_{l=1}^D IS^+_{l}, ~~ IS^- = \frac{1}{D}\sum\limits_{l=1}^D IS^-_{l}
 \end{split}
 \end{equation}
 
-In \eqref{eq:interpretability_new}, $IS^+_{l,k}$ and $IS^-_{l,k}$ represent the interpretability scores in the positive and negative directions of the $l^{th}$ dimension ($l \in \{1,2,...,D\}$, $D=dim(\vec{w})$) for the $k^{th}$ category ($k \in \{1,2,...,K\}$, $K=110$) in SEMCAT respectively. $S_k$ is the set of words in the $k^{th}$ category in SEMCAT and $n_k$ is the number of words in $S_k$. $n_{min}$ corresponds to the minimum number of words required to construct a semantic category (i.e.\ represent a concept). $V_i(\lambda \times n_k)$ represents the set of $\lambda \times n_k$ words that have the highest ($V_l^+$) and lowest ($V_l^-$) values in $l^{th}$ dimension of the embedding space. 
-%$\cap$ is the intersection operator and $|.|$ is the cardinality operator (number of elements) for the intersecting set. In \eqref{eq:interpretability}, $IS_{i}$ gives the interpretability score for the $i^{th}$ dimension and $IS$ gives the average interpretability score of the embedding space. 
+In \eqref{eq:interpretability_new}, $IS^+_{l,k}$ and $IS^-_{l,k}$ represent the interpretability scores in the positive and negative directions of the $l^{th}$ dimension ($l \in \{1,2,...,D\}$, $D=dim(\vec{w})$) for the $k^{th}$ category ($k \in \{1,2,...,K\}$, $K=110$) in SEMCAT, respectively. $S_k$ is the set of words in the $k^{th}$ category in SEMCAT and $n_k$ is the number of words in $S_k$. $n_{min}$ corresponds to the minimum number of words required to construct a semantic category (i.e.\ represent a concept). $V_i(\lambda \times n)$ represents the set of $\lambda \times n$ words that have the highest ($V_l^+$) and lowest ($V_l^-$) values in $l^{th}$ dimension of the embedding space. For all evaluations we use $\lambda=5$.
+
 
 \subsection{Gender Bias} \label{sec:gender_bias}
  
