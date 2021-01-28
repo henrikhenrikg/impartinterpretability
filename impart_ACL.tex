@@ -63,7 +63,7 @@
 
 
 
-\title{Bidirectional imparting of word embeddings for interpretability enhancement and gender debiasing}
+\title{Bidirectional Imparting of Word Embeddings for Interpretability Enhancement and Gender Debiasing}
 
 \author{Lütfi~Kerem~Şenel$^1$ \And Furkan~Şahinuç$^2,3$ \And Veysel~Yücesoy$^2$ \And Hinrich~Schütze$^1$ \And Tolga~Çukur$^3$ \And Aykut~Koç$^3$\\
   $^1$Center for Information and Language Processing, LMU Munich, Germany \\
@@ -85,7 +85,8 @@
 \enoteson
 \enotesoff
 
-\def\proposedmethod{ImpBi}
+%\def\proposedmethod{ImpBi}
+\def\proposedmethod{BiImp}
 
 \begin{document}
 \maketitle
@@ -249,7 +250,7 @@ different, unidirectional imparting can still be implemented
 by maximizing the following modified objective:
 \begin{align}
 \begin{split}
-\log ~ & \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
+\log ~ & \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ \log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
 & -k^w \Bigl(  \sum_{c=1}^{C} \indicator_{i\in{}F_c} \: g(w_{i,c}) + \sum_{c=1}^{C} \indicator_{j \in F_c} \: g(\tilde{w}_{j,c}) \Bigr)
 \end{split}
 \label{eq:word2vec_uni}
@@ -275,7 +276,7 @@ Given a fixed number for embedding dimensions, \textit{bidirectional imparting} 
 The proposed objective for the bidirectionally imparted word2vec model is as follows:
 \begin{align}
 \begin{split}
-& log ~ \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
+& \log ~ \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ \log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
 & -k^w \Bigl(  \sum_{c=1}^{C^+} \indicator_{i\in{}F^+_c} \: g(w_{i,c}) + \sum_{c=1}^{C^+} \indicator_{j \in F^+_c} \: g(\tilde{w}_{j,c}) \\
 & ~~~~~ - \sum_{c=1}^{C^-} \indicator_{i\in{}F^-_c} \: g(w_{i,c}) - \sum_{c=1}^{C^-} \indicator_{j \in F^-_c} \: g(\tilde{w}_{j,c}) \Bigr)
 \end{split}
@@ -436,29 +437,40 @@ biography.
 The train/dev/test split is 
 258,640/39,790/99,477.
 
-For occupation classification based on an embedding model,
-single words in a given biography were first projected to
-the embedding space. Each biography was thereby represented
-as the average vector of words within the biography. A
-linear classifier with softmax output was used, and
-hyperparameters were tuned based on validation set
-performance. Performance was taken as classification
-accuracy. As a latent measure of gender bias in embedding
-models, fairness of the classifier to the two genders was
-examined as described in \citep{hardt16equality} as equality
-of opportunity. Specifically, we measured the True Positive
-Rate Gender Gap ($\text{TPR}_{\text{gap}}$) and True
-Negative Rate Gender Gap ($\text{TNR}_{\text{gap}}$) for the
-classifier. $\text{TPR}_{\text{gap}}$ for a given occupation
-is measured as
+\enote{hs}{below: you should say which classifier you are
+  uusing;
+
+  give more details in the appendix. i believe you have to
+  list the hyperparaemters you used in the appendix as well?
+  
+}
+
+We use a linear classifier for the classification and
+represent a biography as the average of its word
+embeddings. See \ref{app:lexical_resources} for details.
+We follow \citet{hardt16equality} and use
+True Positive/Negative
+Rate Gender Gap ($\text{TPR}_{\text{gap}}$
+/$\text{TNR}_{\text{gap}}$) to evaluate classifier bias:
 \begin{align}
 \begin{split}
     \label{eq:TPR}
-    |Pr\{\hat{Y_o}=1|Y_o=1,A=`f\textrm'\} -\\ Pr\{\hat{Y_o}=1|Y_o=1,A=`m\textrm'\}|
+\text{TPR}_{o,\text{gap}} \!=\!     |Pr\{\hat{B_o}\!=\!1|B_o\!=\!1,B_g\!=\!f\} -\\ Pr\{\hat{B_o}\!=\!1|B_o\!=\!1,B_g\!=\!m\}|
 \end{split}
 \end{align}
-
-\noindent\textcolor{black}{where A defines the true gender of the subject ($`f\textrm'$ for female, $`m\textrm'$ for male), $Y_o=1$ denotes the ground truth label for the presence of $o^{th}$ occupation, $\hat{Y_o}=1$ denotes the classifier prediction for the presence of the $o^{th}$ occupation. As such, $\text{TPR}_{\text{gap}}$ reflects the difference in detection accuracy of a present occupation between male and female subjects. Likewise, $\text{TNR}_{\text{gap}}$ reflects the difference in detection accuracy of an absent occupation between genders. $\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$ were measured for each occupation individually, and then averaged across occupations. High values of either metric are suggestive of gender bias in the underlying word embedding model used for classification.}
+where $o$ is an occupation,
+$B_o$ ($\hat{B_o}$) is the (estimated) occupation of a
+biography and $B_g$ its gender ($m$/$f$ = male/female).
+$\text{TPR}_{\text{gap}}$
+(resp.\ $\text{TNR}_{\text{gap}}$)
+is the
+difference in accuracy between the two genders of
+detecting the presence (resp.\ absence) of an occupation.
+We interpret this as a measure of the gender bias of the
+word embeddings for $o$.
+  We compute
+  $\text{TPR}_{\text{gap}}$/$\text{TNR}_{\text{gap}}$ as the average over all
+  $\text{TPR}_{o,\text{gap}}$/$\text{TNR}_{o,\text{gap}}$.
 
 \section{Experiments and Results} \label{sec:results}
 
@@ -468,14 +480,15 @@ We constructed 300 (resp.\ 600) word-groups from Roget's
 Thesaurus (resp.\ WordNet) for bidirectional imparting: see \ref{app:lexical_resources} for details. 
 % For the paired word-group sets extracted from Roget's Thesaurus and WordNet (i.e., word-groups corresponding to opposite directions of the same dimension), the word-group selections were arranged such that no overlapping words appeared in a given word-group pair.
 Our corpus is the English Wikipedia.
-We then train two sets of 300-dimensional word2vec vectors with bidirectional imparting using
+We train two sets of 300-dimensional word2vec vectors with bidirectional imparting using
 the two word-groups separately for
 different $k^w$ values (Eq.\ 
 \ref{eq:word2vec_bi}); see \ref{app:training_parameters} for hyper-parameters. We additionally train word2vec vectors without imparting.
 
-We compare the resulting imparted embeddings in terms of
-interpretability, measured by
-\eqref{eq:interpretability_new}, and intrinsic performance,
+We evaluate the  imparted embeddings
+on two measures: 
+interpretability score IS (Eq.\
+\eqref{eq:interpretability_new}) and intrinsic performance,
 based on word similarity\footnote{Word similarity results
   were averaged across 13 datasets: WS-353-ALL, SIMLEX-999,
   VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130,
@@ -487,8 +500,10 @@ analogy\footnote{http://download.tensorflow.org/data/questions-words.txt}
 on our evaluations, bidirectional imparting of WordNet
 word-groups (WordNet-Bi) offered the best trade-off between
 interpretability and performance. Therefore, we focus on
-WordNet-Bi for subsequent experiments and comparing it
-against competing methods from the literature.
+WordNet-Bi for subsequent experiments.
+
+%and compare it
+%against competing methods from the literature.
 
 %%% KS: I am not sure if it okay not to share any comparison in the main paper and only refer to the appendix. I did this because the result figures take a lot of space.
 
@@ -502,7 +517,7 @@ Word2Sense \citep{panigrahi19word2sense} and POLAR
 details).
 We do not consider
 SPINE \citep{subramanian18spine}  because it scaled poorly
-for the large vocabularies we use in our study.
+for large vocabularies in our experiments.
 
 Table
 \ref{tab:interp_results} presents the interpretability
@@ -513,20 +528,19 @@ in positive and negative directions separately for $n_{min}
 = 5$.  Note that non-negative embeddings inherently do not
 have any interpretability in the negative
 direction. Bidirectionally imparted embeddings are
-significantly more interpretable in the negative direction
-compared to the alternatives, even for limited $k^w$ values
-($k^w = 0.1$). In the positive direction, interpretability
-of bidirectional imparting is comparable with OIWE-IPG and
-Word2Sense and is higher than the other alternatives for
-limited $k^w$. For greater $k^w$, interpretability of
-bidirectional imparting is substantially higher than all the
-alternatives.
+clearly the most interpretable in the negative direction,
+even for small $k^w$ values
+($k^w = 0.1$). For the positive direction, interpretability
+of \proposedmethod{} is comparable with OIWE-IPG and
+Word2Sense and is higher than all baselines for
+small $k^w$. For larger $k^w$, interpretability of
+\proposedmethod{} is substantially higher than all baselines.
 
 %and $n_{min} = 10$. 
 
 \begin{table}
     \centering
-	\begin{tabular}{lccc}
+	\begin{tabular}{lrll}
 	    \hline \hline
         \multirow{2}{*}{\textbf{Embedding}} & \multirow{2}{*}{\textbf{Size}} &  \multicolumn{2}{c}{\textbf{Interpretability}}\\
                  & & \textbf{pos.} & \textbf{neg.} \\\hline \hline %\hhline{===}
@@ -574,7 +588,6 @@ alternatives.
 % \end{table*}
 
 
-\subsubsection{Preservation of Semantic Structure}
 
 \begin{table*}
     \centering
@@ -596,21 +609,60 @@ alternatives.
 	\label{tab:performance_tests}
 \end{table*}
 
-In addition to the intrinsic evaluations, we also examined the quality of the embeddings on three benchmark classification tasks: Sentiment Analysis \citep{socher13treebank}, Question Classification (TREC) \citep{li06learning} and News Classification \citep{faruqui15sparse} (see \ref{app:clf_tasks} for details). 
+\subsubsection{Preservation of Semantic Structure}
+In addition to the intrinsic evaluation, we also evaluate
+the embeddings on three classification tasks: sentiment analysis \citep{socher13treebank}, question classification (TREC) \citep{li06learning} and news classification \citep{faruqui15sparse} (see \ref{app:clf_tasks} for details). 
+Table \ref{tab:performance_tests} shows results.
 
-Table \ref{tab:performance_tests} lists task performance for the competing methods.
 %WordNet-Bi, OIWE-IPG (IPG), SOV, Parsimax, Word2Sense (W2S), POLAR$_{small}$, POLAR$_{large}$ along with the original word2vec (w2v) model. 
-For WordNet-Bi, results are presented as mean $\pm$ SD across $k^w \in \{0.025,0.050,...,0.200\}$. For analogy and similarity tasks, WordNet-Bi, Parsimax and word2vec yield nearly identical scores, suggesting that WordNet-Bi does not reduce the quality of semantic representations captured by the word embeddings while improving interpretability. Both POLAR models perform slightly worse than the original embeddings (except syntactic analogy and sentiment analysis for POLAR-large). Meanwhile, OIWE-IPG, SOV and Word2Sense yield considerable degree of performance loss in most of the reported intrinsic tasks, implying a reduction in the semantic information captured. Next, three downstream classification tasks were considered. Overall, performance differences among competing methods are relatively minute except for Word2Sense embeddings that show relatively limited performance on question and news classifications tests. Although SOV \citep{faruqui15sparse} achieves the best performance on the classification tasks, it performs relatively poorly on word similarity and analogy tasks along with limited interpretability. Interpretability imparted WordNet-Bi embeddings achieve highly similar performance to the Parsimax and original word2vec embeddings in all tasks, while achieving significantly better interpretability than both. This implies that imparting interpretability does not compromise performance in downstream tasks.  
 
-\subsection{Gender Debiasing}
+For \proposedmethod{}, results are presented as mean $\pm$
+standard deviation for $k^w \in \{0.025,0.050,...,0.200\}$. For analogy
+and similarity tasks, \proposedmethod{}, Parsimax and
+word2vec have similar scores, suggesting that
+\proposedmethod{} does not reduce the quality of 
+word embeddings while
+improving interpretability. Both POLAR models perform
+slightly worse than the original embeddings (except
+for syntactic analogy and sentiment analysis for
+POLAR-large). OIWE-IPG, SOV and Word2Sense suffer from
+considerable performance loss in most 
+intrinsic tasks, implying a reduction in the
+semantic information captured.
 
-\subsubsection{Intrinsic Bias}
+For text
+classification (last five lines),
+differences between methods are minor, 
+except for Word2Sense embeddings, which perform poorly on
+on question and news classification.
+SOV \citep{faruqui15sparse} has the
+best performance on  classification,
+but recall that it has low interpretability (Table~\ref{tab:interp_results})
+\proposedmethod{}
+performs comparably
+to Parsimax and  word2vec
+in all tasks while having clearly higher
+interpretability (see Table~\ref{tab:interp_results}).
+These results demonstrate that \proposedmethod{} meets both
+desiderata: interpretability and good task performance.
 
 % Gender information can be broadly distributed across many dimensions of conventional word embeddings, thereby making it difficult to assess and remove gender bias. 
 % To concentrate gender information in a single dimension of the word embeddings, we trained bidirectionally imparted word2vec model (referred as imparted model or imparted embedding throughout this section), where 'male' and 'female' word-groups were assigned to the first dimension rendering it the gender dimension. We did not assign other embedding dimensions with any word-groups.
 
 % To measure efficacy in capturing gender information, Pearson's correlation coefficient was calculated between stereotypical biases, $b^s$, and embedding-based direct biases ($B^g = corr(b^s, b^{direct})$). For imparted embeddings, correlation was also measured between $b^s$ and bias from the gender dimension ($B^{gd} = corr(b^s, b^{gd})$) that was obtained using \eqref{eq:measure_bias}. As a baseline, a reference correlation level was measured between $b^s$ and the direct biases in the original embedding ($B^g_{original}$).
-Figure \ref{fig:corr} displays the average correlations between the stereotypical biases and embedding-based biases. The gender dimension in imparted embedding ($gd$) reflects the stereotypical gender biases better than the gender vector ($g$) in imparted model and in the original word2vec model. This result suggests that gender information is densely captured by the gender dimension in imparted embeddings.
+
+\subsection{Gender Debiasing}
+
+\subsubsection{Intrinsic Bias}
+
+Figure \ref{fig:corr} displays the average correlations
+between the stereotypical biases and embedding-based
+biases. The gender dimension in imparted embedding ($gd$)
+reflects the stereotypical gender biases better than the
+gender vector ($g$) in imparted model and in the original
+word2vec model. This result suggests that gender information
+is densely captured by the gender dimension in imparted
+embeddings.
 
 \begin{figure}[h]
  	\centering
@@ -647,22 +699,72 @@ Quantitative comparisons of task performance and model fairness, which are measu
         imparted$_{k^w=0.5}^{sd}$ & 0.699 & 0.067 & 0.0024 \\
         \hline \hline
 	\end{tabular}
-	\caption{ Results for the Occupation Classification Task. }
+	\caption{Accuracy and True Positive/Negative Rate
+          (TPR/TNR) on the occupation classification task}
 	\label{tab:biosbias}
 \end{table}
+
+\enote{hs}{it's unusual to have  a very long
+  conclusion. that's why i shortened it a lot}
 
 
 \section{Conclusion} \label{sec:concl}
 
-In this study, we introduced a new method to enhance interpretability of word embeddings by bidirectional imparting of concepts extracted from lexical sources. The proposed method was implemented for the scalable word2vec algorithm, and semantic concepts were extracted from Roget's Thesaurus and WordNet. A unique component of the proposed method is that, it utilizes both directions along each dimension of the vector space separately, enabling encoding of two different concepts, which can be chosen arbitrarily or chosen as opposite concepts as a special case. 
-This allows bidirectional imparting to make more efficient use of the embedding space while increasing encoding flexibility. 
-The relative weighting of the interpretability objective against the original word2vec objective was controlled by a tunable parameter $k^w$. Evaluations on word analogy and similarity tests suggest that limiting $k^w$ to a relatively small range ($<0.2$) allows imparted models to attain on par performance with the original embeddings. Thus, a favorable trade-off can be maintained between the goals of enhancing interpretability and maintaining task performance. 
+In this study, we introduced \proposedmethod{}, a new method for enhancing
+interpretability of word embeddings by bidirectional
+imparting of concepts extracted from lexical resources. 
+%proposed method was implemented for the scalable word2vec
+%algorithm, and semantic concepts were extracted from Roget's
+%Thesaurus and WordNet.
+In contrast to prior work, \proposedmethod{}
+uses  both directions along each
+dimension of the vector space separately, enabling encoding
+of two different concepts; the two concepts can be chosen arbitrarily
+or chosen as opposite concepts as a special case.  As a
+result,
+\proposedmethod{}
+ makes more efficient use of
+the embedding space while increasing encoding flexibility.
 
-The proposed method was compared against several state-of-the-art methods for improving interpretability of word embeddings. The specific variant considered, WordNet-Bi achieved significantly greater interpretability compared to competing state-of-the-art, particularly in the negative direction. At the same time, evaluations on word similarity/analogy tests as well as sentiment, news, question classification tasks showed that WordNet-Bi does not sacrifice expressive performance of the original embedding model to achieve higher interpretability. Overall, these findings indicate that imparting significantly improves interpretability of word2vec embeddings, without compromising their performance.
+\enote{hs}{too much detail for conclusion?
+  
+The relative weighting of the interpretability objective
+against the original word2vec objective was controlled by a
+tunable parameter $k^w$. Evaluations on word analogy and
+similarity tests suggest that limiting $k^w$ to a relatively
+small range ($<0.2$) allows imparted models to attain on par
+performance with the original embeddings.
+
+}
+
+We showed that  \proposedmethod{}
+achieves higher interpretability of word embeddings copmared to
+state-of-the-art methods, particularly in the negative
+direction. At the same time, evaluation on word
+similarity/analogy tests as well as sentiment, news and
+question classification  showed that \proposedmethod{} does
+not sacrifice task performance.
+Thus, \proposedmethod{} offers a favorable
+trade-off between the goals of enhancing
+interpretability and maintaining task performance.
+
+
 %on high-level natural language processing tasks. 
 
 % An important advantage of the imparting method is its ability to concentrate information regarding a desired concept to a pre-defined embedding dimension. Specifically, 
-Bidirectional imparting allows to represent opposite concepts in a single dimension as a continuum. As an important demonstration, we used bidirectional imparting to concentrate gender information in a single gender dimension. The gender dimension accurately reflects the stereotypical gender bias as dictated by human judgments. Furthermore, the construction of a gender dimension is shown to be useful to reduce gender bias when coupled with the hard and strong debiasing methods. Collectively, these methods achieved lower levels of gender bias and improved classification fairness. These results highlight the potential of the imparting method in reducing many different types of biases and stereotypes present in word embeddings.
+
+\proposedmethod{} represents opposite concepts in a single
+dimension on a continuum. As an important demonstration, we
+used \proposedmethod{} to concentrate gender information in
+a single gender dimension.  We showed that this gender
+dimension has a high correlation with stereotypical gender
+bias as measured by human judgments. Furthermore, we showed
+that this gender dimension is useful for reducing gender
+bias when coupled with debiasing.  The combination of
+\proposedmethod{} and debiasing achieved lower levels of
+gender bias and improved classification fairness. These
+results highlight the potential of \proposedmethod{} in
+reducing biases and stereotypes present in word embeddings.
 
 % Here, the imparting method was demonstrated to improve interpretability and reduce gender bias in word2vec embedding models, using concepts from two common lexical sources. That said, imparting through modification of the learning objective is easily adaptable to different embedding algorithms, and to different lexical resources. The imparting framework can also be adopted for goals beyond interpretability enhancement, such as improvement of task performance. If imparting is used to encode task-relevant concepts, similar task performance can be achieved using simpler models with fewer dimensions. In turn, this can offer benefits in terms of memory requirements and computational load. 
 
@@ -742,7 +844,12 @@ Yet, for larger $k^w$, interpretability level of the imparted word2vec embedding
 \begin{figure*}
 	\centering
 	\includegraphics[width=16cm]{Figures/interpretability_wordnet_vs_roget.pdf}
-	\caption{Positive (top) and negative (bottom) direction interpretability scores for unidirectionally imparted word2vec embeddings using Roget's Thesaurus (Roget-Uni) and WordNet (WordNet-Uni) and their bidirectionally imparted versions (Roget-Bi, WordNet-Bi) for $k^w \in [0.025,1.00]$ along with the original word2vec embedding and a random baseline for $n_{min} = 5$ (left) and $n_{min} = 10$ (right).}
+	\caption{Positive (top) and negative (bottom)
+          direction interpretability scores for
+          unidirectionally imparted word2vec embeddings
+          using Roget's Thesaurus (Roget-Uni) and WordNet
+          (WordNet-Uni) and their bidirectionally imparted
+          versions (\proposedmethod{} (Roget), \proposedmethod{} (WordNet)) for $k^w \in [0.025,1.00]$ along with the original word2vec embedding and a random baseline for $n_{min} = 5$ (left) and $n_{min} = 10$ (right).}
 	\label{fig:wordnet_vs_roget}
 \end{figure*}
 % \end{SCfigure*}
