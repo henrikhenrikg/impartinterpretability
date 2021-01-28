@@ -207,6 +207,13 @@ The authors demonstrated the effectiveness of their method only for the off-line
 
 \section{Methods} \label{sec:methods}
 
+\enote{hs}{you should write a paragraph 2-3 sentences here
+  inroducing imparting. you cannot assume that reveiewrs
+  have read your previous paper. the concept of imparting is
+  never properly introduced in writing (although it is
+  introduced as formulas)}
+
+
 %In this section, we introduce the generalized bidirectional imparting method and an interpretability evaluation method for bidirectional embeddings. We also discuss the application of bidirectional imparting on gender bias.
 
 \subsection{Generalized Bidirectional Imparting }
@@ -376,6 +383,27 @@ $b^{gd}$ from
 the gender dimension. $b^{gd}$ is calculated as:
 \enote{hs}{below: how did you come up with this? what is the
   purpose of the min?}
+\begin{eqnarray}
+B^{gd} = \mbox{corr}(b^s,b^{gd}) \label{eq:bgd}\\
+B^{g} = \mbox{corr}(b^{direct},b^{gd})\label{eq:bg}\\
+     b^{gd}_p = 
+     \begin{cases}
+		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
+		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
+	\end{cases}
+\end{eqnarray}
+where $\mu_m$ and $\mu_f$ are the average values of the
+words in the \textit{male} and \textit{female} word-groups
+in the gender dimension ($gd$), respectively. $w_p$ stands
+for the value of the $p^{th}$ profession in the gender
+dimension and $b^{gd}_p$ represents the bias value of
+$p^{th}$ profession calculated from gender
+dimension. $B^{gd}$ and $B^g$ indicate how well the gender dimension
+captures stereotypical bias, comparing to human judgments
+and the direct bias measure
+(Eq.\ \eqref{eq:direct_bias}).
+
+\enote{hs}{
 \begin{align}
 \begin{split}
      b^{gd}_p = 
@@ -386,16 +414,7 @@ the gender dimension. $b^{gd}$ is calculated as:
 \end{split}
 \label{eq:measure_bias}
 \end{align}
-where $\mu_m$ and $\mu_f$ are the average values of the
-words in the \textit{male} and \textit{female} word-groups
-in the gender dimension ($gd$), respectively. $w_p$ stands
-for the value of the $p^{th}$ profession in the gender
-dimension and $b^{gd}_p$ represents the bias value of
-$p^{th}$ profession calculated from gender
-dimension. $B^{gd}$ indicates how well the gender dimension
-captures stereotypical bias. We also calculate the
-correlation $B^g$ of $b^s \in P$  with the direct bias metric
-$b^{direct}$in \eqref{eq:direct_bias} for comparison.
+}
 
 \enote{hs}{put this in the experimental section:
 
@@ -655,52 +674,127 @@ desiderata: interpretability and good task performance.
 
 \subsubsection{Intrinsic Bias}
 
-Figure \ref{fig:corr} displays the average correlations
-between the stereotypical biases and embedding-based
-biases. The gender dimension in imparted embedding ($gd$)
-reflects the stereotypical gender biases better than the
-gender vector ($g$) in imparted model and in the original
-word2vec model. This result suggests that gender information
+Figure \ref{fig:corr} shows that the correlation of the \proposedmethod{} gender
+          dimension with human judgments (blue, $B^{gd}$,
+          Eq.\ \ref{eq:bgd}) is higher than its correlation with the gender
+          vector
+          $w_{she} - w_{he}$ (orange, $B^g$,
+          Eq.\ \ref{eq:bg} and higher than
+          the correlation of the original word2vec
+          embeddings with the gender vector (dashed green
+          line). 
+This result suggests that gender information
 is densely captured by the gender dimension in imparted
 embeddings.
 
-\begin{figure}[h]
+\enote{hs}{above: I'm not sure i undrestand the arguemnt:
+  \proposedmethod{} correlated clearly better than word2vec
+  with the gender vector. do you conclude from that that it
+  also reflects human judgment of bias better?}
+
+        \begin{figure}[h]
  	\centering
 	\includegraphics[width=8.0cm]{Figures/gender_correlation.pdf}
-	\caption{Average correlations between stereotypical biases and biases calculated from the gender dimension ($B^{gd} = corr(b^s, b^{gd})$, blue line) and from the gender vector ($B^g = corr(b^s, b^{direct})$, orange line) for the imparted word embeddings for $k^w \in [0.025,1.00]$. The reference correlation level that is calculated from the gender vector of the original embedding space ($B^g_{original}$, green dashed line) is also shown.}
+	\caption{Correlation of the \proposedmethod{} gender
+          dimension with human judgments (blue) and the gender
+          vector
+          $w_{she} - w_{he}$ (orange) as a function of
+          $k^w$. See Eqs.\ \ref{eq:bgd} / \ref{eq:bg}.
+          Green dashed line: correlation of the original word2vec
+          embeddings with the gender vector.}
 	\label{fig:corr}
 \end{figure}
 
- Figure \ref{fig:bias} displays the average direct bias levels of word2vec and imparted embeddings for varying $k^w$. Naturally, imparting gender information in a single dimension does not alter the overall bias in the word embedding, but rather concentrates most of the bias to a single dimension as implied by Figure \ref{fig:corr}. Removing this dimension from the embedding space then considerably reduces the bias, especially for larger $k^w$. Figure \ref{fig:bias} also shows the average direct bias levels of word2vec, imparted and reduced embeddings for varying $k^w$ after debiasing. The bias levels of the full and reduced imparted models (red dashed and dotted lines) are closer in this case, and substantially lower than that for the word2vec model. \textcolor{black}{These results show that learning an embedding space with an explicit gender dimension enhances the performance of the hard-debiasing method.}
+        Figure \ref{fig:bias}
+shows direct bias
+          ($b^{direct}_1$, see Eq.\ \ref{eq:direct_bias})
+of word2vec and \proposedmethod{}.
+Naturally, imparting  a single
+dimension with
+gender information 
+does not alter the overall bias in the word
+ embeddings, but rather concentrates most of the bias on a
+ single dimension as implied by Figure
+ \ref{fig:corr}. Removing this dimension from the embedding
+ space then considerably reduces the bias, especially for
+ larger $k^w$. Figure \ref{fig:bias} also shows 
+ $b^{direct}_1$
+after debiasing.
+$b^{direct}_1$
+of the full and reduced imparted models (red dashed
+ and dotted lines) are closer in this case, and
+ substantially lower than that of word2vec. These results show that learning
+   an embedding space with an explicit gender dimension
+   enhances the performance of hard debiasing.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=8.0cm]{Figures/gender_bias_reduction.pdf}
-	\caption{Average direct bias values of the imparted embeddings (dashed lines) and reduced embeddings (dotted lines) for $k^w \in [0.025,1.00]$ along with the bias values of the original embeddings (solid lines). Results are shown prior to (blue lines) and following (red lines) the hard-debiasing procedure.}
+	\caption{Direct bias
+          ($b^{direct}_1$, see Eq.\ \ref{eq:direct_bias})
+of the \proposedmethod{}
+          (dashed lines) and reduced 
+          (dotted lines) embeddings as a function of $k^w$. Solid lines:
+          $b^{direct}_1$
+ of the original embeddings. Blue/red: Results before/after
+ hard debiasing.}
 	\label{fig:bias}
 \end{figure}
 
 \subsubsection{Bias in Classification}
 
-Hard-debiasing has been suggested to introduce elevated gender bias in high-level classification tasks when compared with original embedding models \citep{prost19biasTextClassif}. Therefore, we coupled gender-imparted embedding models with the \textit{strong-debiasing} method that alleviates this issue by taking $N$ in \eqref{eq:direct_bias} as the entire vocabulary as opposed to gender neutral words \citep{prost19biasTextClassif}. As a gold-standard reference, we use the scrubbing technique \citep{de19biosbias} that removes words characterized as explicit gender indicators from the biographies prior to classification.
+\citet{prost19biasTextClassif} give evidence that hard debiasing  introduces elevated
+gender bias in high-level classification tasks when compared
+with the original embedding model.
+We therefore also use 
+\textit{strong debiasing} \citep{prost19biasTextClassif},
+a method that alleviates this issue
+by taking $N$ (Eq.\ \eqref{eq:direct_bias}) as the entire
+vocabulary as opposed to just gender neutral words.
+As a baseline, we use \emph{scrubbing}
+\citep{de19biosbias}, a technique that removes words characterized as
+explicit gender indicators from the biographies prior to
+classification.
 
-Quantitative comparisons of task performance and model fairness, which are measured on BiosBias dataset, were performed on original, scrubbed, hard debiased, strong debiased and imparted - strong debiased embedding models. Table \ref{tab:biosbias} lists classification accuracy, $\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$ for each model. We find that hard-debiasing reduces classification fairness, as manifested in relatively high $\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$ values. Strong-debiasing performed on the original word2vec model leads to relatively limited change in classification fairness. Yet, when strong-debiasing is applied to the proposed gender-imparted embeddings (imparted$^{sd}$), it lowers $\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$ almost to the level of the reference scrubbing method, without a major compromise in accuracy. These results provide further evidence that concentration of gender information to an embedding dimension improves performance of debiasing methods.
+Table \ref{tab:biosbias} compares
+original embeddings, scrubbing, hard debiasing, strong
+debiasing and the combination of \proposedmethod{} and
+strong debiasing (B+S) on accuracy
+(to measure task performance)
+and TPR/TNR (Eq.\ \ref{eq:TPR}, to measure classification fairness).
+The dataset is BiosBias.
+Hard debiasing
+has relatively high TPR/TNR, suggesting it
+reduces classification fairness.
+Strong debiasing 
+on  original word2vec results in a relatively limited
+change in classification fairness. Yet when
+\proposedmethod{} and
+strong debiasing are combined
+(B+S),
+$\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$
+are lowered almost to the level of scrubbing,
+without a major compromise in accuracy. These results
+provide further evidence that concentration of gender
+information on an embedding dimension improves performance
+of debiasing methods.
 
 \begin{table}
     \centering
 	\begin{tabular}{lccc}
 	    \hline \hline
         \textbf{Embedding} & \textbf{Acc.} & $\textbf{TPR}_{\textbf{gap}}$ & $\textbf{TNR}_{\textbf{gap}}$ \\\hline \hline %\hhline{===}
-        word2vec & 0.717 & 0.094 & 0.0034 \\
-        scrubbed & 0.717 & 0.061 & 0.0022 \\
-        hard debiased & 0.700 & 0.105 & 0.0037 \\
-        strong debiased & 0.699 & 0.087 & 0.0033 \\
-        imparted$_{k^w=0.1}^{sd}$ & 0.697 & 0.066 & 0.0022 \\
-        imparted$_{k^w=0.5}^{sd}$ & 0.699 & 0.067 & 0.0024 \\
+        word2vec & .717 & .094 & .0034 \\
+        scrubbed & .717 & .061 & .0022 \\
+        hard debiasing & .700 & .105 & .0037 \\
+        strong debiasing & .699 & .087 & .0033 \\
+        B+S$_{k^w=.1}$ & .697 & .066 & .0022 \\
+        B+S$_{k^w=.5}$ & .699 & .067 & .0024 \\
         \hline \hline
 	\end{tabular}
 	\caption{Accuracy and True Positive/Negative Rate
-          (TPR/TNR) on the occupation classification task}
+          (TPR/TNR) on the occupation classification
+          task. B+S = \proposedmethod{}+strong imparting.}
 	\label{tab:biosbias}
 \end{table}
 
