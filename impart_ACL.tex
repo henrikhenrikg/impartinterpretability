@@ -157,7 +157,7 @@ The proposed method utilizes both directions along each dimension of the vector 
 The proposed method is demonstrated on the word2vec skip-gram model \citep{mikolov13word2vec_a,mikolov13word2vec_b}; Roget's Thesaurus and \textit{WordNet} are leveraged to select concepts. 
 The relative weighting of interpretability versus semantic structure is controlled by a parameter that is selected to optimize the trade-off between interpretability and task performance. 
 Comprehensive experiments are performed to demonstrate improved interpretability for word embeddings, without significant performance loss. 
-Inspired by  \citep{bolukbasi16debiasing}, we also demonstrate that bidirectional imparting can concentrate gender information in a single embedding dimension as a continuum. 
+Inspired by  \citet{bolukbasi16debiasing}, we also demonstrate that bidirectional imparting can concentrate gender information in a single embedding dimension as a continuum. 
 This enables efficient capture of gender bias and debiasing through removal of the relevant embedding dimension. 
 
 Our main contributions are as follows:
@@ -207,20 +207,10 @@ The authors demonstrated the effectiveness of their method only for the off-line
 
 \section{Methods} \label{sec:methods}
 
-\enote{hs}{you should write a paragraph 2-3 sentences here
-  inroducing imparting. you cannot assume that reveiewrs
-  have read your previous paper. the concept of imparting is
-  never properly introduced in writing (although it is
-  introduced as formulas)}
+\subsection{Imparting}
 
-
-%In this section, we introduce the generalized bidirectional imparting method and an interpretability evaluation method for bidirectional embeddings. We also discuss the application of bidirectional imparting on gender bias.
-
-\subsection{Generalized Bidirectional Imparting }
-\label{sec:gen_imparting}
-
-\citet{senel20impart} introduced a
-unidirectional imparting method   that
+Our work builds on the work in \citet{senel20impart} where they introduced a
+unidirectional imparting method that
 enhances interpretability in GloVe word
 embeddings by forcing words related to predefined concepts
 to project more strongly onto individual embedding
@@ -234,7 +224,7 @@ To achieve this, they modified the GloVe cost as follows:
 \end{split}
 \label{eq:glove_uni}
 \end{align}
-where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and context vectors, $w_{i,c}$ and $\tilde{w}_{j,c}$ denote $c^{th}$ components of word and context vectors, $b_i$ and $\tilde{b}_j$, denote word and context biases, $X_{ij}$ denotes co-occurrence for $i^{th}$ and $j^{th}$ words in vocabulary, $V$ denotes vocabulary size, and $f(\cdot)$ is a weighting function to prevent bias from rare words. The first term in the cost aims to capture semantic structure in the embedding model based on word co-occurences. The second term aims to align embedding dimensions with word-groups. In this latter term, $C$ denotes the number of word-groups (where $C\leq dim(\vec{w})$), $\indicator_{x \in S}$ is the indicator variable for the inclusion ${x \in S}$, $F_c$ denotes the indices of words that belong to the $c^{th}$ group, $k_g$ controls the relative weighting of the second term, and the function $g(\cdot)$, adjusts the size of the updates during training. 
+where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and context vectors, $w_{i,c}$ and $\tilde{w}_{j,c}$ denote $c^{th}$ components of word and context vectors, $b_i$ and $\tilde{b}_j$, denote word and context biases, $X_{ij}$ denotes co-occurrence for $i^{th}$ and $j^{th}$ words in vocabulary, $V$ denotes vocabulary size, and $f(\cdot)$ is a weighting function to prevent bias from rare words. The first term in the cost is the original cost function of the GloVe that aims to capture semantic structure in the embedding model based on word co-occurences. The second term aims to align embedding dimensions with word-groups. In this latter term, $C$ denotes the number of word-groups (where $C\leq dim(\vec{w})$), $\indicator_{x \in S}$ is the indicator variable for the inclusion ${x \in S}$, $F_c$ denotes the indices of words that belong to the $c^{th}$ group, $k_g$ controls the relative weighting of the second term, and the function $g(\cdot)$, adjusts the size of the updates during training. 
 % $g(\cdot)$ is defined as:
 % \begin{equation*}
 %     g(x) = 
@@ -243,6 +233,18 @@ where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and context vectors, $w_{i
 %     ~1/(4ex), & \text{otherwise}
 %     \end{cases}
 % \end{equation*}
+\enote{hs}{you should write a paragraph 2-3 sentences here
+  inroducing imparting. you cannot assume that reveiewrs
+  have read your previous paper. the concept of imparting is
+  never properly introduced in writing (although it is
+  introduced as formulas)}
+ \enote{ks}{Is it better like this?}
+
+
+%In this section, we introduce the generalized bidirectional imparting method and an interpretability evaluation method for bidirectional embeddings. We also discuss the application of bidirectional imparting on gender bias.
+
+\subsection{Generalized Bidirectional Imparting }
+\label{sec:gen_imparting}
 
 In this study, we propose a generalized imparting framework that is capable of online learning and bidirectional imparting. To alleviate computation and memory limitations, we focus on the skip-gram model of word2vec with negative sampling.
 % The objective that the skip-gram model aims to maximize for a word pair $(i, j)$ is given as:
@@ -356,13 +358,13 @@ we constructed two word-groups corresponding to
 
 Bolukbasi et al \citep{bolukbasi16debiasing} proposed two different metrics to assess level of gender bias in word embeddings, namely direct bias and indirect bias. Here, we use the direct bias metric:
 \begin{equation}
-b^{direct}_\kappa = \frac{1}{|N|}\sum_{w\in N}|\cos(\vec{w},g)|^\kappa
+b^{direct}_\kappa = \frac{1}{|N|}\sum_{w\in N}|\cos(\vec{w},\vec{g})|^\kappa
 \label{eq:direct_bias}
 \end{equation}
 where $N$ is the set of gender neutral words,
 %$|N|$ denotes
 %the cardinality of $N$,
-$g= w_{she} - w_{he}$ is the gender vector
+$\vec{g}= w_{she} - w_{he}$ is the gender vector
 and $\kappa$ is a parameter that
 controls the relative weighting of high vs.\ low bias
 levels; we set $\kappa=1$. Gender
@@ -375,46 +377,50 @@ by the imparting method, we leverage the gender-bias
 dataset $P$ provided by \citet{bolukbasi16debiasing}. This
 dataset contains definitional and stereotypical gender bias
 levels of 291 professions that are obtained by human
-assessments.\footnote{https://github.com/tolga-b/debiaswe/blob/master/data/professions.json\\Professions
-  that were not in our vocabulary were filtered out.} We
-calculate the correlation $B^{gd}$ between the stereotypical biases
-$b^s \in P$  and the biases
-$b^{gd}$ from
-the gender dimension. $b^{gd}$ is calculated as:
-\enote{hs}{below: how did you come up with this? what is the
-  purpose of the min?}
-\begin{eqnarray}
-B^{gd} = \mbox{corr}(b^s,b^{gd}) \label{eq:bgd}\\
-B^{g} = \mbox{corr}(b^{direct},b^{gd})\label{eq:bg}\\
+assessments.\footnote{https://github.com/tolga-b/debiaswe/blob/master/data/professions.json\\Professions that were not in our vocabulary were filtered out.} 
+We calculate the correlation $B^{g}$ between the stereotypical biases $b^s \in P$  and the biases
+$b^{direct}$  based on \eqref{eq:direct_bias}:
+\begin{equation}
+    B^{g} = \mbox{corr}(b^s,b^{direct})
+    \label{eq:bg}
+\end{equation}
+as well as the correlation $B^{gd}$ between the stereotypical biases $b^s \in P$ and the biases
+$b^{gd}$ from the gender dimension:
+\begin{equation}
+    B^{gd} = \mbox{corr}(b^s,b^{gd}) \label{eq:bgd}
+\end{equation}
+and $b^{gd}$ is calculated as:
+\enote{hs}{below: how did you come up with this? what is the purpose of the min?}
+\enote{KS}{I tried to provide an intuition.}
+\begin{align}
      b^{gd}_p = 
      \begin{cases}
 		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
 		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
 	\end{cases}
-\end{eqnarray}
+	\label{eq:measure_bias}
+\end{align}
 where $\mu_m$ and $\mu_f$ are the average values of the
 words in the \textit{male} and \textit{female} word-groups
 in the gender dimension ($gd$), respectively. $w_p$ stands
 for the value of the $p^{th}$ profession in the gender
 dimension and $b^{gd}_p$ represents the bias value of
 $p^{th}$ profession calculated from gender
-dimension. $B^{gd}$ and $B^g$ indicate how well the gender dimension
-captures stereotypical bias, comparing to human judgments
-and the direct bias measure
-(Eq.\ \eqref{eq:direct_bias}).
+dimension. In \eqref{eq:measure_bias}, $\mu_m$ and $\mu_f$ act as upper and lower bounds for the projections of the words onto gender dimension and bias values are normalized accordingly. $B^{gd}$ and $B^g$ indicate how well the gender dimension and gender vector $\vec{g}$
+captures stereotypical gender bias, respectively.
 
-\enote{hs}{
-\begin{align}
-\begin{split}
-     b^{gd}_p = 
-     \begin{cases}
-		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
-		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
-	\end{cases}
-\end{split}
-\label{eq:measure_bias}
-\end{align}
-}
+% \enote{hs}{
+% \begin{align}
+% \begin{split}
+%      b^{gd}_p = 
+%      \begin{cases}
+% 		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
+% 		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
+% 	\end{cases}
+% \end{split}
+% \label{eq:measure_bias}
+% \end{align}
+% }
 
 \enote{hs}{put this in the experimental section:
 
@@ -570,13 +576,13 @@ small $k^w$. For larger $k^w$, interpretability of
         Word2Sense & 2250 & 34.11 & -\\
         POLAR$_{small}$ & 500 & 23.89 & 20.8\\
         POLAR$_{large}$ & 1465 & 28.60 & 25.91\\
-        WordNet-Bi$_{k^w = 0.1}$ & 300 & 36.24 & 39.1\\
-        WordNet-Bi$_{k^w = 0.2}$ & 300 & 42.04 & 46.77\\
-        WordNet-Bi$_{k^w = 1}$ & 300 & 52.90 & 57.80\\
+        \proposedmethod{}$_{k^w = 0.1}$ & 300 & 36.24 & 39.1\\
+        \proposedmethod{}$_{k^w = 0.2}$ & 300 & 42.04 & 46.77\\
+        \proposedmethod{}$_{k^w = 1}$ & 300 & 52.90 & 57.80\\
         %WordNet-Bi ($k^w = 1.0$) & 75.22 & 48.65 \\ 
         \hline \hline
 	\end{tabular}
-	\caption{ Results for the interpretability evaluations. }
+	\caption{ Interpretability of the competing methods measaured using \eqref{eq:interpretability_new}. }
 	\label{tab:interp_results}
 \end{table}
 
@@ -612,7 +618,7 @@ small $k^w$. For larger $k^w$, interpretability of
     \centering
 	\begin{tabular}{lccccccccc}
 		\hline \hline 
-		\textbf{Task} & \textbf{w2v} & \textbf{IPG} & \textbf{SOV} & \textbf{Parsimax} & \textbf{W2S} & \textbf{POLAR$_s$} & \textbf{POLAR$_l$} & \textbf{WordNet-Bi} \\ \hline \hline %\hhline{======}
+		\textbf{Task} & \textbf{w2v} & \textbf{IPG} & \textbf{SOV} & \textbf{Parsimax} & \textbf{W2S} & \textbf{POLAR$_s$} & \textbf{POLAR$_l$} & \textbf{\proposedmethod{}} \\ \hline \hline %\hhline{======}
 	    Sem. Anlg. & 79.87 & 32.62 & 52.60 & 79.56 & 12.94 & 70.53 & 67.97 & 79.65 $\pm$ 0.7 \\
 	    Syn. Anlg. & 67.63 & 25.60 & 41.56 & 67.46 & 19.44 & 56.07 & 70.81 & 66.32 $\pm$ 1.3 \\ 
 	    \hline %\hhline{------}
@@ -624,7 +630,8 @@ small $k^w$. For larger $k^w$, interpretability of
 	    Relig. News & 87.01 & 85.75 & 88.55 & 86.87 & 85.06 & 84.08 & 84.92 & 87.43 $\pm$ 0.5 \\
 	    Comp. News & 81.55 & 78.45 & 86.32 & 81.16 & 73.42 & 77.55 & 72.90 & 80.34 $\pm$ 1.8 \\ \hline \hline %\hhline{======}
 	\end{tabular}
-	\caption{ Results on the performance evaluation tests. }
+	\caption{ Results on the performance evaluation tests. For \proposedmethod{}, results are presented as mean $\pm$
+standard deviation for $k^w \in \{0.025,0.050,...,0.200\}$.}
 	\label{tab:performance_tests}
 \end{table*}
 
