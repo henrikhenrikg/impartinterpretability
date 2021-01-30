@@ -88,16 +88,42 @@
 %\def\proposedmethod{ImpBi}
 \def\proposedmethod{BiImp}
 
+\hypersetup{draft}
 \begin{document}
 \maketitle
 \begin{abstract}
-Word embeddings, which enable mapping of semantic properties of words into a dense vector space, typically suffer from poor interpretability -- a general deficiency in many neural learning models. 
-Here, we propose a generalized method for aligning embedding dimensions with concepts during the learning phase to impart interpretability while preserving the inherent semantic structure. 
-The proposed method separately utilizes both directions of each vector space dimension to increase the number of imparted concepts.
-Experiments are performed on the scalable \textit{word2vec} algorithm.
-Comprehensive demonstrations clearly indicate that bidirectional imparting allows for higher interpretability without sacrificing performance evaluated on intrinsic tests as well as several downstream classification tasks.
-Moreover, we adopt the imparting method for reducing gender bias in word embedding models. Specifically, we show that efficacy of current debiasing methods can be enhanced by encoding gender opposite concepts (e.g., male-female) in a single embedding dimension as evaluated using intrinsic bias evaluations as well as fairness measurements for high level classification tasks.
+  Word embeddings
+  %, which enable mapping of semantic properties of words
+  %into a dense vector space,
+  generally suffer from poor interpretability -- a general
+  deficiency in many neural learning models.
+  Here, we propose \emph{bidirectional imparting} or
+\emph{\proposedmethod}, a generalized method for aligning embedding
+dimensions with concepts during the embedding learning
+phase. \proposedmethod{} makes  dimensions interpretable
+while preserving the semantic structure of the embedding space.
+ \proposedmethod{} separately utilizes both directions of
+ a vector space dimension: each direction can be assigned
+ to a different concept. This increases the number of
+ concepts that can be represented in the embedding space.
+ Our experimental results demonstrate the interpretability
+of \proposedmethod{} embeddings; at the same time,
+performance in intrinsic and extrinsic evaluation is
+comparable to baseline embeddings.
+We also use \proposedmethod{} 
+to reduce gender bias in word embeddings
+by encoding gender-opposite concepts (e.g., male-female) in
+a single embedding dimension.
+We then show that combining 
+baseline debiasing methods
+with \proposedmethod{} increases debiasing performance and
+fairness of classification.
 \end{abstract}
+
+
+%We show that current debiasing methods can be enhanced 
+%as evaluated using intrinsic bias evaluations as well as fairness measurements for high level classification tasks.
+%Experiments are performed on the scalable \textit{word2vec} algorithm.
 
 \section{Introduction}\label{sec:intro}
 
@@ -137,10 +163,10 @@ is their lack of interpretability: dimensions of the dense vector
 space do not individually represent semantic concepts
 \citep{chen16InfoGAN,levy14dependency} or other directly
 interpretable distinctions.
-Yet interpretability of word embeddings is highly desired
+Yet interpretability of word embeddings is highly desirable
 for several reasons. 
 (i) It will enable researchers to make sense of embeddings
-of individual words,  which are currently meaningful only in relation to other embeddings 
+of individual words,  which are currently meaningful only in relation to other embeddings.
 (ii) Word embeddings serve as base representation in many deep learning models, so their interpretability is key for interpretable deep learning models.
 %  (ii) The ability to interpret an embedding model would unravel the semantic concepts represented along the vector space dimensions.
 (iii) In interpretable embedding models, it is easier to remove redundant or nonrelevant dimensions, resulting in reduced computation and memory requirements.
@@ -148,32 +174,53 @@ of individual words,  which are currently meaningful only in relation to other e
 
 In a recent study  \citep{senel20impart}, the imparting approach was proposed to obtain
 interpretable word embeddings while still keeping
-the similarities between words mostly unchanged (i.e., semantic structure is preserved). The
+the similarities between words mostly unchanged -- i.e., semantic structure is preserved. The
 objective function of GloVe 
 \citep{pennington14glove} was modified to align each
-individual dimension of the vector space with a single
+dimension of the vector space with a single
 pre-defined concept. However, this unidirectional imparting
 of embedding dimensions does not utilize the full capacity
 of the embedding space since negative directions are
-ignored. Moreover, generalizability of the imparting method
-beyond GloVe  was not
-investigated. 
+ignored.
 
-In this study, we introduce \textit{\proposedmethod{}}, a generalized imparting approach that is capable of online learning and bidirectional imparting. 
-The proposed method utilizes both directions along each dimension of the vector space separately to encode two different concepts, which can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} - \textit{bad}, \textit{male} - \textit{female}) as a special case (see Figure \ref{fig:bi_imp}), providing a more efficient use of the embedding space while increasing encoding flexibility. 
-\proposedmethod{} is demonstrated on the word2vec skip-gram model \citep{mikolov13word2vec_a,mikolov13word2vec_b}; Roget's Thesaurus and \textit{WordNet} are leveraged to select concepts. 
-The relative weighting of interpretability versus semantic structure is controlled by a parameter that is selected to optimize the trade-off between interpretability and task performance. 
-Comprehensive experiments are performed to demonstrate improved interpretability for word embeddings, without significant performance loss. 
-Inspired by  \citet{bolukbasi16debiasing}, we also demonstrate that \proposedmethod{} can concentrate gender information in a single embedding dimension as a continuum. 
-This enables efficient capture of gender bias and debiasing through removal of the relevant embedding dimension. 
+% this is so weak that it's probably better to drop this sentence
+%Moreover, generalizability of the imparting method
+%beyond GloVe  was not
+%investigated. 
+
+\enote{hs}{below: you mention ``online'' for the first
+  time. please say before the first mention of ``online''
+  that preivous work was not online. If being online is not
+  an innvoation, then it should not appear in the sentence
+  below, i think}
+
+In this paper, we introduce \textit{\proposedmethod{}}, a generalized imparting approach that is capable of online learning and bidirectional imparting. 
+\proposedmethod{} utilizes both directions along each
+dimension of the vector space separately to encode two
+different concepts. The two concepts  can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} -- \textit{bad}, \textit{male} -- \textit{female}) as a special case (see Figure \ref{fig:bi_imp}), providing a more efficient use of the embedding space while increasing encoding flexibility. 
+We demonstrate \proposedmethod{} by modifying the word2vec
+skip-gram model
+\citep{mikolov13word2vec_a,mikolov13word2vec_b}; concepts
+are selected from Roget's Thesaurus and WordNet.
+A hyperparameter an be tuned to achieve a good tradeoff
+between interpretability on the one hand and
+preservation of semantic structure on the other.
+We perform comprehensive experiments  and demonstrate that
+interpretability of word embeddings improves while
+performance stays about the same.
+Inspired by  \citet{bolukbasi16debiasing}, we also
+demonstrate that \proposedmethod{} can concentrate gender
+information in a single embedding dimension, the gender dimension, as a continuum. 
+This supports efficient capture of gender bias 
+and debiasing through removal of the gender dimension.
 
 Our main contributions are as follows:
 \begin{itemize}
     \item We propose \proposedmethod{}, a bidirectional imparting algorithm that utilizes both directions of each embedding dimension separately to encode different concepts.
     
-    \item We perform comprehensive evaluations and provide comparison with  previous work, showing that \proposedmethod{} achieves greater interpretability than alternatives without sacrificing performance. 
+    \item We perform comprehensive evaluations and provide comparison with  previous work, showing that \proposedmethod{} achieves greater interpretability  without sacrificing performance. 
     
-    \item We utilize \proposedmethod{} to create a gender dimension. We show that this dimension effectively captures gender information and improves the performance of the debiasing methods.
+    \item We utilize \proposedmethod{} to create a gender dimension. We show that this dimension effectively captures gender information and improves the performance of debiasing.
 \end{itemize}
 
 \section{Related Work} \label{sec:related}
@@ -774,7 +821,7 @@ of debiasing methods.
 In this study, we introduced \proposedmethod{}, a new method for enhancing
 interpretability of word embeddings by bidirectional
 imparting of concepts extracted from lexical resources. 
-%proposed method was implemented for the scalable word2vec
+%\proposedmethod{} was implemented for the scalable word2vec
 %algorithm, and semantic concepts were extracted from Roget's
 %Thesaurus and WordNet.
 In contrast to prior work, \proposedmethod{}
