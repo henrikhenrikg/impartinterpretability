@@ -83,7 +83,7 @@
                     ##1: ##2
                     $>>>$\hspace{1cm}}}}}
 \enoteson
-%\enotesoff
+\enotesoff
 
 %\def\proposedmethod{ImpBi}
 \def\proposedmethod{BiImp}
@@ -172,7 +172,7 @@ of individual words,  which are currently meaningful only in relation to other e
 (iii) In interpretable embedding models, it is easier to remove redundant or nonrelevant dimensions, resulting in reduced computation and memory requirements.
 (iv) Interpretability also facilitates removal of gender, race and other biases \citep{dufter19ultraDense}.
 
-In a recent study  \citep{senel20impart}, the imparting approach was proposed to obtain
+In a recent study  \citep{senel20impart}, an offline  imparting approach was proposed to obtain
 interpretable word embeddings while still keeping
 the similarities between words mostly unchanged -- i.e., semantic structure is preserved. The
 objective function of GloVe 
@@ -188,11 +188,8 @@ ignored.
 %beyond GloVe  was not
 %investigated. 
 
-\enote{hs}{below: you mention ``online'' for the first
-  time. please say before the first mention of ``online''
-  that preivous work was not online. If being online is not
-  an innvoation, then it should not appear in the sentence
-  below, i think}
+\enote{hs}{it's good to metnion online below, bu tthen yoou
+  have to say in the paper why online is beter than offline}
 
 In this paper, we introduce \textit{\proposedmethod{}}, a generalized imparting approach that is capable of online learning and bidirectional imparting. 
 \proposedmethod{} utilizes both directions along each
@@ -227,7 +224,7 @@ Our main contributions are as follows:
 
 Benefits of interpretable word embeddings have motivated several previous efforts  to improve interpretability. Most of these studies introduce a sparsity constraint  to learn sparse representations where each word is represented by only a few non-zero dimensions. 
 %The motivation behind sparsity is that by investigating the words that correspond to non-zero values in a dimension, one might infer which semantic features are encoded in that dimension. 
-Based on this idea, \citet{murphy12nnse} propose non-negative sparse embeddings (NNSE)  to perform non-negative matrix factorization (NMF) on word co-occurrence variant matrices. As an extension to NNSE, \citet{fyshe14interpretable} proposed joint non-negative sparse embeddings (JNNSE) to incorporate additional knowledge on word similarity as measured by the similarity of cortical activity patterns they evoked. To address the memory and scale issues of NNSE-based methods, \citet{luo15online} proposed an online learning method, where sparse embeddings were obtained using a modified skip-gram model \citep{mikolov13word2vec_a}. Several other studies proposed to learn sparse transformations that map pretrained state-of-the-art embeddings to sparse, more interpretable vector spaces instead of learning them from corpora (or co-occurrence matrices) directly. \citet{arora18linalg} and \citet{faruqui15sparse} used sparse coding methods and \citep{subramanian18spine} proposed to train a sparse auto-encoder.
+Based on this idea, \citet{murphy12nnse} propose non-negative sparse embeddings (NNSE)  to perform non-negative matrix factorization (NMF) on word co-occurrence variant matrices. As an extension to NNSE, \citet{fyshe14interpretable} proposed joint non-negative sparse embeddings (JNNSE) to incorporate additional knowledge on word similarity as measured by the similarity of cortical activity patterns. To address the memory and scale issues of NNSE-based methods, \citet{luo15online} proposed an online learning method, where sparse embeddings were obtained using a modified skip-gram model \citep{mikolov13word2vec_a}. Several other studies proposed to learn sparse transformations that map pretrained state-of-the-art embeddings to sparse, more interpretable vector spaces instead of learning them from corpora (or co-occurrence matrices) directly. \citet{arora18linalg} and \citet{faruqui15sparse} use sparse coding methods and \citep{subramanian18spine} train a sparse auto-encoder.
 
 % While the above-mentioned approaches can increase interpretability to a certain degree, they do not exercise control over the specific concepts or word senses that are captured in the embedding dimensions.  
 % Inspired by research in topic modelling, \citep{panigrahi19word2sense} proposed a method based on Latent Dirichlet Allocation (LDA) to extract the distributions of difference word senses from a corpus, which are then used to learn sparse interpretable word embeddings in a method named Word2Sense. 
@@ -235,7 +232,7 @@ Based on this idea, \citet{murphy12nnse} propose non-negative sparse embeddings 
 % Therefore, these methods are not considered further in this study.
 
 Sparse representations typically have higher dimensionality
-than dense embeddings since only a few words are encoded in each dimension. Thus, they can suffer from memory and scale issues especially for tasks that require a broad vocabulary. 
+than dense embeddings since only a few words are encoded in each dimension. Thus, they can suffer from memory and scaling issues especially for tasks that require a large vocabulary. 
 % Moreover, the increased dimensionality can also yield suboptimal performance in NLP tasks such as word analogy \citep{senel20impart}. 
 To strictly preserve the dimensionality and semantic
 structure of word embeddings, several researchers proposed
@@ -248,9 +245,11 @@ along individual embedding dimensions. However, increases in
 clustering along a subset of embedding dimensions come at
 the expense of reduced clustering (i.e., interpretability)
 along the remaining dimensions
-\citep{zobnin17rotations}. \citet{dufter19ultraDense} used
-orthogonal transformations to align a given linguistic
-signal (e.g., a collection of words) to an embedding dimension  to obtain an interpretable subspace. However, this method has only been demonstrated in a unidimensional subspace to date, so its performance in higher dimensional subspaces remains unclear. In a concurrent, independent study \citep{mathew20polar}, the transformation method \textit{POLAR} was proposed to map an existing embedding space to a polar space where each embedding dimension corresponds to a pair of antonyms (i.e., polar opposites).
+\citep{zobnin17rotations}.
+\citet{DBLP:conf/acl/RotheS16} and
+\citet{dufter19ultraDense} use
+orthogonal transformations to align a  linguistic
+signal (e.g., a collection of words) to an embedding dimension  to obtain an interpretable subspace. However, this method has only been demonstrated in a low-dimensional subspace to date, so its performance in higher dimensional subspaces remains unclear. In a concurrent, independent study \citep{mathew20polar}, the transformation method \textit{POLAR} was proposed to map an existing embedding space to a polar space where each embedding dimension corresponds to a pair of antonyms (i.e., polar opposites).
 % With the exception of \citep{fyshe14interpretable}, \citep{dufter19ultraDense} and \citep{mathew20polar}, the prior art discussed in this section does not incorporate or else leverage lexical information from external resources. In two recent studies, we have leveraged external lexical resources to propose a quantitative metric of interpretability for embedding models \citep{senel18semanticStructure}, and then to impart interpretability during the learning phase to maintain model performance \citep{senel20impart}. 
 In a recent study \citep{senel20impart}, an imparting method
 was proposed in which individual dimensions of the model
@@ -263,13 +262,13 @@ The authors demonstrated the effectiveness of their method only for the off-line
 
 \subsection{Imparting}
 
-Our work builds on the work in \citet{senel20impart} where they introduced a
+Our work builds on \citep{senel20impart}, which introduces a
 unidirectional imparting method that
 enhances interpretability in GloVe word
 embeddings by forcing words related to predefined concepts
 to project more strongly onto individual embedding
 dimensions.
-To achieve this, they modified the GloVe cost as follows:
+To achieve this, they modify GloVe's cost as follows:
 
 \begin{align}
 \begin{split}
@@ -278,7 +277,14 @@ To achieve this, they modified the GloVe cost as follows:
 \end{split}
 \label{eq:glove_uni}
 \end{align}
-where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and context vectors, $w_{i,c}$ and $\tilde{w}_{j,c}$ denote $c^{th}$ components of word and context vectors, $b_i$ and $\tilde{b}_j$, denote word and context biases, $X_{ij}$ denotes co-occurrence for $i^{th}$ and $j^{th}$ words in vocabulary, $V$ denotes vocabulary size, and $f(\cdot)$ is a weighting function to prevent bias from rare words. The first term in the cost is the original cost function of the GloVe that aims to capture semantic structure in the embedding model based on word co-occurences. The second term aims to align embedding dimensions with word-groups. In this latter term, $C$ denotes the number of word-groups (where $C\leq dim(\vec{w})$), $\indicator_{x \in S}$ is the indicator variable for the inclusion ${x \in S}$, $F_c$ denotes the indices of words that belong to the $c^{th}$ group, $k_g$ controls the relative weighting of the second term, and the function $g(\cdot)$, adjusts the size of the updates during training. 
+where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and
+context vectors, $w_{i,c}$ and $\tilde{w}_{j,c}$ denote the
+$c^{th}$ components of word and context vectors, $b_i$ and
+$\tilde{b}_j$ denote word and context biases, $X_{ij}$
+denotes co-occurrence of the $i^{th}$ and $j^{th}$ words in
+the vocabulary, $V$ denotes vocabulary size, and $f(\cdot)$
+is a weighting function to prevent bias from rare words. The
+first term in the cost is GloVe's original cost function. It aims to capture semantic structure in the embedding model based on word co-occurences. The second term aims to align embedding dimensions with word-groups. In this latter term, $C$ denotes the number of word-groups (where $C\leq dim(\vec{w})$), $\indicator_{x \in S}$ is the indicator variable for the inclusion ${x \in S}$, $F_c$ denotes the indices of words that belong to the $c^{th}$ group, $k_g$ controls the relative weighting of the second term, and the function $g(\cdot)$, adjusts the size of the updates during training. 
 % $g(\cdot)$ is defined as:
 % \begin{equation*}
 %     g(x) = 
@@ -294,7 +300,7 @@ where $\vec{w}_i$ and $\vec{\tilde{w}_j}$ denote word and context vectors, $w_{i
 \subsection{Generalized Bidirectional Imparting }
 \label{sec:gen_imparting}
 
-In this study, we propose a generalized imparting framework that is capable of online learning and bidirectional imparting. To alleviate computation and memory limitations, we focus on the skip-gram model of word2vec with negative sampling.
+In this paper, we propose \proposedmethod{}, a generalized imparting framework that is capable of online learning and bidirectional imparting. To alleviate computation and memory limitations, we focus on the skip-gram model of word2vec with negative sampling.
 % The objective that the skip-gram model aims to maximize for a word pair $(i, j)$ is given as:
 % \begin{equation}
 %     \log ~ \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg]   
@@ -327,10 +333,10 @@ negative samples and $P_n(w)$ is the unigram distribution
 Imparting was previously only performed
 for the positive direction of embedding dimensions.
 %As discussed in \citep{senel18semanticStructure},
-But negative directions are equally suitable to encode semantic, interpretable concepts. Based on this argument, in this study, we extend the imparting method to both directions of the embedding dimensions. 
-Given a fixed number for embedding dimensions, \textit{bidirectional imparting} doubles the concept capacity compared to the unidirectional case. Moreover, by encoding opposite concepts such as \textit{good} and \textit{bad} or \textit{male} and \textit{female} to opposing directions of the same dimension, these concepts can be represented in a continuum.
+But negative directions are equally suitable to encode semantic, interpretable concepts. Based on this argument, we extend the imparting method to both directions of the embedding dimensions. 
+Given a fixed number for embedding dimensions, \proposedmethod{} doubles the concept capacity compared to the unidirectional case. Moreover, by aligning opposite concepts such as \textit{good} and \textit{bad} or \textit{male} and \textit{female} with opposing directions of the same dimension, these concepts can be represented in a continuum.
 
-The proposed objective for the bidirectionally imparted word2vec model is as follows:
+The proposed objective for \proposedmethod{}, the bidirectionally imparted word2vec model is as follows:
 \begin{align}
 \begin{split}
 & \log ~ \sigma ({\vec{\tilde{w}}_{j}}^T \vec{w}_{i}) + \sum_{t = 1}^{m} {\mathbb{E}}_{z_t \sim P_n(w)} \bigg[ \log ~ \sigma({\vec{-\tilde{w}}_{z_t}}^T \vec{w}_{i}) \bigg] \\ 
@@ -361,13 +367,20 @@ until all word-groups are paired.\footnote{For cases when
 \subsection{Interpretability Evaluation}
 \label{sec:interp_eval}
 
-In order to evaluate the interpretability of word embeddings, here we adapt the evaluation based on SEMCAT categories
-\citep{senel18semanticStructure} and subcategories \citep{senel18trInterpret}. SEMCAT (sub)categories are taken as an approximation for the semantic concepts that humans can use to interpret embedding dimensions. Interpretability score is, then, calculated based on how strongly these categories are represented in embedding dimensions. This metric is low-cost, fast, reproducible and shown to correlate well with human judgement \citep{senel20impart}. However, it cannot capture the difference
+To evaluate the interpretability of word embeddings,  we  evaluate based on SEMCAT categories
+\citep{senel18semanticStructure} and subcategories
+\citep{senel18trInterpret}. SEMCAT (sub)categories are taken
+as an approximation for the semantic concepts that humans
+can use to interpret embedding dimensions. Based on SEMCAT,
+we calculate the Interpretability Score IS: it is
+calculated based as a measure of  how strongly these
+categories are represented in embedding dimensions. This
+metric is low-cost, fast, reproducible and was shown to correlate well with human judgement \citep{senel20impart}. However, it cannot capture the difference
 between interpretability changes in the positive and
-negative directions of an embedding dimension, because it
+negative directions of an embedding dimension because it
 performs maximum pooling over the opposite directions of
-each dimension. To capture this information, here we
-propose a new, directional interpretability metric:
+each dimension. To capture this information, we
+propose a new directional interpretability metric:
 
 \begin{equation} \label{eq:interpretability_new}
 \begin{split}
@@ -378,14 +391,37 @@ propose a new, directional interpretability metric:
 \end{split}
 \end{equation}
 
-In Eq. \ref{eq:interpretability_new}, $IS^+_{l,k}$ and $IS^-_{l,k}$ represent the interpretability scores in the positive and negative directions of the $l^{th}$ dimension ($l \in \{1,2,...,D\}$, $D=dim(\vec{w})$) for the $k^{th}$ category ($k \in \{1,2,...,K\}$, $K=110$) in SEMCAT, respectively. $S_k$ is the set of words in the $k^{th}$ category in SEMCAT and $n_k$ is the number of words in $S_k$. $n_{min}$ corresponds to the minimum number of words required to construct a semantic category (i.e.\ represent a concept). $V_i(\lambda \times n)$ represents the set of $\lambda \times n$ words that have the highest ($V_l^+$) and lowest ($V_l^-$) values in $l^{th}$ dimension of the embedding space. For all evaluations we use $\lambda=5$.
+In Eq. \ref{eq:interpretability_new}, $IS^+_{l,k}$ and
+$IS^-_{l,k}$ represent the interpretability scores in the
+positive and negative directions of the $l^{th}$ dimension
+($l \in \{1,2,...,D\}$, $D=dim(\vec{w})$) for the $k^{th}$
+category ($k \in \{1,2,...,K\}$, $K=110$) in SEMCAT,
+respectively. $S_k$ is the set of words in the $k^{th}$
+category in SEMCAT and $n_k$ is the number of words in
+$S_k$. $n_{min}$ corresponds to the minimum number of words
+required to construct a semantic category (i.e.\ represent a
+concept). $V_i(\lambda \times n)$ represents the set of
+$\lambda \times n$ words that have the highest ($V_l^+$) and
+lowest ($V_l^-$) values in the $l^{th}$ dimension of the embedding space. For all evaluations we use $\lambda=5$.
 
 
 \subsection{Gender Bias} \label{sec:gender_bias}
  
 \subsubsection{Intrinsic Bias Evaluation}
  
-An important benefit of interpretability in embedding models is that individual dimensions clearly represent specific concepts. The proposed imparting method is particularly useful in this regard since it deliberately controls the matching between concepts and dimensions. As argued in \citep{dufter19ultraDense}, this important property can facilitate removal of unwanted information from the model. A common example of such undesirable information is the inherent gender bias in corpora that is reflected in learned embedding models. \citet{bolukbasi16debiasing} report that embedding models often contain gender bias,  particularly  for occupation related words. 
+An important benefit of interpretability in embedding models
+is that individual dimensions clearly represent specific
+concepts. The proposed imparting method is particularly
+useful in this regard since it deliberately controls the
+matching between concepts and dimensions. As 
+\citet{dufter19ultraDense} argue, this important property can
+facilitate removal of unwanted information from the model. A
+common example of such undesirable information is the
+inherent gender bias in corpora that is reflected in learned
+embedding models. \citet{bolukbasi16debiasing} report that
+embedding models often contain gender bias, particularly for
+occupation related words.
+
 % Beyond gender appropriate \textit{she-he} analogies such as \textit{queen-king}, examples of gender stereotype analogies include \textit{nurse-surgeon} and \textit{volleyball-football}.
 
 % Here, we aimed to demonstrate the utility of bidirectional imparting for reducing gender bias in embedding models. 
