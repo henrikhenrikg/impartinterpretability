@@ -83,7 +83,7 @@
                     ##1: ##2
                     $>>>$\hspace{1cm}}}}}
 \enoteson
-%\enotesoff
+% \enotesoff
 
 %\def\proposedmethod{ImpBi}
 \def\proposedmethod{BiImp}
@@ -150,8 +150,8 @@ Embeddings can also be used to investigate how differently/similarly concepts ar
 
 \begin{figure}
     \centering
-    \includegraphics[width=8.0cm]{Figures/gender_bias_reduction.pdf}
-    \caption{\proposedmethod{} improves interpretability in both of the embedding directions. Placeholder duplciate figure for now}
+    \includegraphics[width=7.5cm]{Figures/impart_figure.pdf}
+    \caption{\proposedmethod{} improves interpretability in both of the embedding directions by forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
     \label{fig:bi_imp}
 \end{figure}
 
@@ -190,8 +190,9 @@ ignored.
 
 \enote{hs}{it's good to metnion online below, bu tthen yoou
   have to say in the paper why online is beter than offline}
+  \enote{ks}{Is it good now?}
 
-In this paper, we introduce \textit{\proposedmethod{}}, a generalized imparting approach that is capable of online learning and bidirectional imparting. 
+In this paper, we introduce \textit{\proposedmethod{}}, a generalized imparting approach that is capable of bidirectional imparting and online learning, hence more efficient and adaptable to new training data. 
 \proposedmethod{} utilizes both directions along each
 dimension of the vector space separately to encode two
 different concepts. The two concepts  can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} -- \textit{bad}, \textit{male} -- \textit{female}) as a special case (see Figure \ref{fig:bi_imp}), providing a more efficient use of the embedding space while increasing encoding flexibility. 
@@ -373,8 +374,8 @@ To evaluate the interpretability of word embeddings,  we  evaluate based on SEMC
 as an approximation for the semantic concepts that humans
 can use to interpret embedding dimensions. Based on SEMCAT,
 we calculate the Interpretability Score IS: it is
-calculated based as a measure of  how strongly these
-categories are represented in embedding dimensions. This
+calculated as a measure of  how strongly these
+(sub)categories are represented in embedding dimensions. This
 metric is low-cost, fast, reproducible and was shown to correlate well with human judgement \citep{senel20impart}. However, it cannot capture the difference
 between interpretability changes in the positive and
 negative directions of an embedding dimension because it
@@ -502,30 +503,6 @@ $B^{gd}$ (resp.\ $B^g$) indicate how well the
 \proposedmethod{} gender dimension (resp.\ the gender vector $\vec{g}$) captures
 stereotypical gender bias.
 
-% \enote{hs}{
-% \begin{align}
-% \begin{split}
-%      b^{gd}_p = 
-%      \begin{cases}
-% 		~~\min \left( 1, \cfrac{w_{p}}{\mu_m} \right) & \text{if } w_{p} \geq 0, \vspace{0.1cm} \\ 
-% 		-\min \left( 1, \cfrac{w_{p}}{\mu_f} \right) & \text{if } w_{p} < 0,
-% 	\end{cases}
-% \end{split}
-% \label{eq:measure_bias}
-% \end{align}
-% }
-
-
-% \subsubsection{Reducing Gender Bias}
-\enote{KS}{I am not sure if we should remove this paragraph
-  to experiments section or leave here.}
-\enote{hs}{i agree: better move it to the experimental section}
-We investigate the effect of (i) gender imparting, (ii) 
-removing the gender dimension from the embeddings (iii) hard debiasing
-\citep{bolukbasi16debiasing} on the gender bias level of the embedding spaces. Specifically, we measure the bias level of the original, imparted and reduced embeddings before and after hard debiasing using Eq. \ref{eq:direct_bias}.
-
-% , where the gender subspace is first identified via principal component analysis (PCA). To do this, difference between word vectors of ten pairs of gender words (i.e., female-male, she-he, girl-boy, etc.) were computed, and PCA was then performed on these 10 difference vectors. The PC with the largest eigenvalue predominantly captured variance among the difference vectors (around 60\% of total variance), suggesting that gender bias primarily lies along a single direction in the embedding space. In the \textit{neutralize} stage, vectors for the gender-neutral words were updated to ensure that their projection onto the first PC (i.e., gender subspace) is zero. Equality sets were then defined where each set contains a gender pair such as \{men, women\}. In the \textit{equalize} stage, vectors of the words in the equality sets were updated such that the gender pair in each set becomes equidistant to the gender subspace. Therefore, following the equalization stage, each gender-neutral word became equidistant to both \textit{men} and \textit{women} vectors. 
-
 \subsubsection{Bias in Classification}
 
 \citet{prost19biasTextClassif} argue that lower gender bias
@@ -573,11 +550,12 @@ word embeddings for $o$.
 \subsection{Interpretability Enhancement}
 
 \enote{hs}{please check following paragraph for accuracy}
+\enote{ks}{Looks correct to me. However \ref{app:impart_comparison} also contains material that is not mentioned here.}
 We constructed 600 word-groups from Roget's
 Thesaurus and WordNet for bidirectional imparting: see \ref{app:lexical_resources} for details. 
 Our corpus is the English Wikipedia.
 Using the objective Eq.\ 
-\ref{eq:word2vec_bi}),
+\ref{eq:word2vec_bi},
 we train two sets of 300-dimensional \proposedmethod{}
 vectors
 (one for Roget's and WordNet each)
@@ -663,34 +641,6 @@ small $k^w$. For larger $k^w$, interpretability of
 	\label{tab:interp_results}
 \end{table}
 
-%%% KS: Below table contain interpretability results for n_{min}=5 and n_{min}=10. I replaced it with the table above (only n_{min}=5) to fit into one column to save space.
-
-% \begin{table*}
-% \centering
-% 	\label{tab:interp_results}
-% 	\begin{tabular}{lccccc}
-% 	    \hline \hline
-%         \multirow{3}{*}{\textbf{Embedding}} & \multirow{3}{*}{\textbf{Size}} &  \multicolumn{4}{c}{\textbf{Interpretability}}\\
-%                  & & \multicolumn{2}{c}{$\textbf{n}_{\textbf{min}}$\textbf{ = 5}} & \multicolumn{2}{c}{$\textbf{n}_{\textbf{min}}$\textbf{ = 10}} \\ 
-%                  & & \textbf{pos.} & \textbf{neg.} & \textbf{pos.} & \textbf{neg.} \\\hline \hline %\hhline{===}
-%         word2vec & 300 & 12.80 & 12.88 & 7.66 & 7.47 \\
-%         OIWE-IPG & 300 & 35.50 & - & 29.51 & - \\
-%         SOV & 1000 & 14.28 & 13.98 & 8.08 & 7.86 \\
-%         Parsimax & 300 & 18.55 & 17.66 & 14.31 & 12.91 \\
-%         Word2Sense & 2250 & 34.11 & - & 25.74 & - \\
-%         POLAR-small & 500 & 23.89 & 20.8 & 13.79 & 12.44 \\
-%         POLAR-large & 1465 & 28.60 & 25.91 & 17.65 & 14.22 \\
-%         WordNet-Bi ($k^w = 0.1$) & 300 & 36.24 & 39.1 & 22.03 & 23.05 \\
-%         WordNet-Bi ($k^w = 0.2$) & 300 & 42.04 & 46.77 & 24.56 & 23.69 \\
-%         WordNet-Bi ($k^w = 1$) & 300 & 52.90 & 57.80 & 32.55 & 34.81 \\
-%         %WordNet-Bi ($k^w = 1.0$) & 75.22 & 48.65 \\ 
-%         \hline \hline
-% 	\end{tabular}
-% 	\caption{ Results for the interpretability evaluations. }
-% \end{table*}
-
-
-
 \begin{table*}
     \centering
 	\begin{tabular}{lccccccccc}
@@ -713,6 +663,7 @@ standard deviation for $k^w \in \{0.025,0.050,...,0.200\}$.}
 \end{table*}
 
 \subsubsection{Preservation of Semantic Structure}
+\label{sec:sem_structure}
 In addition to the intrinsic evaluation, we also evaluate
 the embeddings on three classification tasks: sentiment analysis \citep{socher13treebank}, question classification (TREC) \citep{li06learning} and news classification \citep{faruqui15sparse} (see \ref{app:clf_tasks} for details). 
 Table \ref{tab:performance_tests} shows results.
@@ -756,7 +707,7 @@ desiderata: interpretability and good task performance.
 
 \subsection{Gender Debiasing}
 
-\subsubsection{Intrinsic Bias}
+\subsubsection{Intrinsic Bias}\label{sec:intrinsic_bias}
 We calculate $B^{gd}$ (Eq.\  \ref{eq:bgd}) and $B^{g}$
 (Eq.\  \ref{eq:bg}) for \proposedmethod{}. Additionally, we calculate $B^{g}$ for the original
 word2vec embeddings ($B^{g}_{original}$).  Figure
@@ -794,10 +745,11 @@ as well.
 	\label{fig:corr}
 \end{figure}
 
+We investigate the effect of (i) gender imparting, (ii) 
+removing the gender dimension from the embeddings (iii) hard debiasing
+\citep{bolukbasi16debiasing} on the gender bias level of the embedding spaces. Specifically, we measure the bias level of the original, imparted and reduced embeddings before and after hard debiasing using Eq. \ref{eq:direct_bias}.
 Figure \ref{fig:bias}
-shows direct bias
-          ($b^{direct}_1$, see Eq.\  \ref{eq:direct_bias})
-of word2vec and \proposedmethod{}.
+shows the bias levels.
 Naturally, imparting  a single
 dimension with
 gender information 
@@ -806,12 +758,10 @@ does not alter the overall bias in the word
  single dimension as implied by Figure
  \ref{fig:corr}. Removing this dimension from the embedding
  space then considerably reduces the bias, especially for
- larger $k^w$. Figure \ref{fig:bias} also shows 
- $b^{direct}_1$
-after debiasing.
+ larger $k^w$. After hard debiasing,
 $b^{direct}_1$
 of the full and reduced imparted models (red dashed
- and dotted lines) are closer in this case, and
+ and dotted lines) are closer, and
  substantially lower than that of word2vec. These results show that learning
    an embedding space with an explicit gender dimension
    enhances the performance of hard debiasing.
@@ -840,13 +790,17 @@ We therefore also use
 a method that alleviates this issue
 by taking $N$ (Eq.\  \ref{eq:direct_bias}) as the entire
 vocabulary as opposed to just gender neutral words.
-As a baseline, we use \emph{scrubbing}
-\citep{de19biosbias}, a technique that removes words characterized as
-explicit gender indicators from the biographies prior to
-classification.
+% As a baseline, we use \emph{scrubbing}
+% \citep{de19biosbias}, a technique that removes words characterized as
+% explicit gender indicators from the biographies prior to
+% classification.
+
+\enote{ks}{I removed the scrubbing baseline}
 
 Table \ref{tab:biosbias} compares
-original embeddings, scrubbing, hard debiasing, strong
+original embeddings,
+% scrubbing, 
+hard debiasing, strong
 debiasing and the combination of \proposedmethod{} and
 strong debiasing (B+S) on accuracy
 (to measure task performance)
@@ -862,7 +816,8 @@ change in classification fairness. Yet when
 strong debiasing are combined
 (B+S),
 $\text{TPR}_{\text{gap}}$ and $\text{TNR}_{\text{gap}}$
-are lowered almost to the level of scrubbing,
+are substantially lowered.
+% lowered almost to the level of scrubbing,
 without a major compromise in accuracy. These results
 provide further evidence that concentration of gender
 information on an embedding dimension improves performance
@@ -874,7 +829,7 @@ of debiasing methods.
 	    \hline \hline
         \textbf{Embedding} & \textbf{Acc.} & $\textbf{TPR}_{\textbf{gap}}$ & $\textbf{TNR}_{\textbf{gap}}$ \\\hline \hline %\hhline{===}
         word2vec & .717 & .094 & .0034 \\
-        scrubbed & .717 & .061 & .0022 \\
+        % scrubbed & .717 & .061 & .0022 \\
         hard debiasing & .700 & .105 & .0037 \\
         strong debiasing & .699 & .087 & .0033 \\
         B+S$_{k^w=.1}$ & .697 & .066 & .0022 \\
@@ -886,6 +841,42 @@ of debiasing methods.
           task. B+S = \proposedmethod{}+strong debiasing.}
 	\label{tab:biosbias}
 \end{table}
+
+
+
+\subsection{Hybrid Gender and Interpretability Imparted Embeddings}
+
+\begin{table}
+    \centering
+	\begin{tabular}{lccc}
+		\hline \hline 
+		\textbf{Task} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.1$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.2$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=1$}\\ \hline \hline %\hhline{======}
+	    Semantic Anlg. & 79.07 & 78.13 & 73.25 \\
+	    Syntactic Anlg. & 66.61 & 65.17 & 45.58 \\ 
+	    \hline %\hhline{------}
+	    Word Sim. & 60.62 & 59.11 & 48.94 \\
+	    \hline %\hhline{------}
+	    Sentiment Anly. & 80.41 & 79.55 & 79.84 \\ \hline %\hhline{------}
+	    Question Clf. & 84.60 & 85.00 & 84.20 \\ \hline %\hhline{------}
+	    Sports News & 96.11 & 95.73 & 95.73 \\
+	    Religion News & 85.89 & 87.43 & 88.55 \\
+	    Comput. News & 81.42 & 81.03 & 79.74 \\\hline
+	    Interp.$^+_{n_{min}=5}$ & 36.88 & 41.22 & 54.28 \\
+	    Interp.$^-_{n_{min}=5}$ & 38.47 & 44.79 & 58.50 \\
+	    Interp$^+_{n_{min}=10}$ & 22.41 & 24.17 & 34.07 \\
+	    Interp.$^-_{n_{min}=10}$ & 22.49 & 23.89 & 35.43 \\\hline
+	    Gender B.$_{reduced}$ & 0.0470 & 0.0403 & 0.0441 \\
+	    Gender B.$_{debiased}$ & 0.0168 & 0.0122 & 0.0148 \\ 
+
+	    \hline \hline %\hhline{======}
+	\end{tabular}
+	\caption{ Results of Evaluation Tests for the Hybrid Gender and Interpretability Imparted Embeddings.}
+	\label{tab:gender_plus_wordnet}	
+\end{table}
+
+We demonstrate the feasibility of \proposedmethod{} for concurrent gender and interpretability imparting. To do this, we obtained a hybrid model where the first dimension was encoded with gender word-groups and the remaining 299 dimensions were bidirectionally imparted with word-groups extracted from WordNet. Evaluation on gender bias, interpretability and task performance were repeated on this hybrid model. Table \ref{tab:gender_plus_wordnet} shows the evaluation results. Hybrid model performs similarly to only WordNet imparted \proposedmethod{} (Section \ref{sec:interp_eval} and \ref{sec:sem_structure}) in interpretability and task performance evaluations, and performs similarly to only gender imparted \proposedmethod{} (Section \ref{sec:intrinsic_bias}) in gender bias evaluations. These results indicate that \proposedmethod{} enables gender debiasing and interpretability enhancement simultaneously in embedding models without compromising task performance.
+
+
 
 \section{Conclusion} \label{sec:concl}
 
@@ -1033,7 +1024,7 @@ Yet, for larger $k^w$, interpretability level of the imparted word2vec embedding
 \end{figure*}
 % \end{SCfigure*}
 
-Figure \ref{fig:wordnet_vs_roget} shows interpretability values of the imparted embeddings for $n_{min} = 5$ and $n_{min} = 10$ \textcolor{black}{in both of the positive and negative directions. It can be seen that bidirectional imparting achieves significantly improved interpretability compared to unidirectional imparting in the negative direction with minimal compromise in the positive direction.}
+Figure \ref{fig:wordnet_vs_roget} shows interpretability values of the unidirectionally and bidirectionally imparted word2vec embeddings for $n_{min} = 5$ and $n_{min} = 10$ in both of the positive and negative directions. It can be seen that bidirectional imparting achieves considerably improved interpretability compared to unidirectional imparting in the negative direction with minimal compromise in the positive direction.
 
 % Imparting improves interpretability in a controllable manner by offering a tuning parameter $k^w$, that adjusts how heavily the optimization objective weights interpretability against the original goal of capturing semantic relations among words. Naturally, emphasis on interpretability for relatively large values of $k^w$ might lead to suboptimal representation of word semantics. In order to investigate this, we evaluated the imparted embeddings on the intrinsic word analogy \citep{mikolov13word2vec_b} and word similarity \citep{faruqui14communityEval} tests. For analogy tests we use Google analogy dataset\footnote{http://download.tensorflow.org/data/questions-words.txt}. For brevity, word similarity results were averaged across 13 datasets\footnote{Word similarity datasets are: WS-353-ALL, SIMLEX-999, VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130, MEN-TR-3k, RG-65, MTurk-771, WS-353-SIM, MC-30, MTurk-287} on which the evaluations were performed.
 
@@ -1049,7 +1040,7 @@ Figure \ref{fig:sim_and_analogy} presents the performances of the embeddings on 
  \subsection{Competing Methods}
  \label{app:competing_methods}
  
- OIWE-IPG was trained on the same corpus as the word2vec embeddings using the default parameters reported in \citep{luo15online} \textcolor{black}{, yielding 300 dimensional vectors}. SOV and Parsimax that work on pretrained embeddings were performed on the original word2vec embeddings, again using suggested parameters in \citep{faruqui15sparse} and \citep{park17rotated}, \textcolor{black}{resulting in 1000 and 300 dimensional vectors, respectively.} For Word2Sense, we used the publicly available \textcolor{black}{2250 dimensional} pretrained vectors\footnote{https://github.com/abhishekpanigrahi1996/Word2Sense} due to computational restrictions. \textcolor{black}{For POLAR, we trained two different versions. First, we obtained 1465 dimensional POLAR-large embeddings that were reported in \citep{mathew20polar}, by applying polar transformation on Google's pretrained word2vec embeddings\footnote{https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM} using all 1465 antonym pairs. Note that these embeddings were originally trained on a much larger corpus (Google News) with a substantially larger vocabulary (3 million) than our word2vec embeddings. Therefore, POLAR-large embeddings are significantly more expensive than our imparted embeddings in terms of computational and linguistic resources. Second, we obtained 500 dimensional POLAR-small embeddings that are more comparable to imparted embeddings in terms of model dimensionality and resource usage, by performing the polar transformation on our original word2vec embeddings using the default parameters\footnote{https://github.com/Sandipan99/POLAR}.} 
+ OIWE-IPG was trained on the same corpus as the word2vec embeddings using the default parameters reported in \citep{luo15online} \textcolor{black}{, yielding 300 dimensional vectors}. SOV and Parsimax that work on pretrained embeddings were performed on the original word2vec embeddings, again using suggested parameters in \citep{faruqui15sparse} and \citep{park17rotated}, \textcolor{black}{resulting in 1000 and 300 dimensional vectors, respectively.} For Word2Sense, we used the publicly available \textcolor{black}{2250 dimensional} pretrained vectors\footnote{https://github.com/abhishekpanigrahi1996/Word2Sense} due to computational restrictions. \textcolor{black}{For POLAR, we trained two different versions. First, we obtained 1465 dimensional POLAR-large embeddings that were reported in \citep{mathew20polar}, by applying polar transformation on Google's pretrained word2vec embeddings\footnote{https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM} using all 1465 antonym pairs. Note that these embeddings were originally trained on a much larger corpus (Google News) with a substantially larger vocabulary (3 million) than our word2vec embeddings. Therefore, POLAR-large embeddings are considerably more expensive than our imparted embeddings in terms of computational and linguistic resources. Second, we obtained 500 dimensional POLAR-small embeddings that are more comparable to imparted embeddings in terms of model dimensionality and resource usage, by performing the polar transformation on our original word2vec embeddings using the default parameters\footnote{https://github.com/Sandipan99/POLAR}.} 
  
  
  
@@ -1110,36 +1101,36 @@ A potential risk of debiasing on gender-imparted models is undesirable loss of s
 
 
 
-\subsection{Hybrid Gender and Interpretability Imparted Embeddings}
+% \subsection{Hybrid Gender and Interpretability Imparted Embeddings}
 
-\begin{table}
-    \centering
-	\begin{tabular}{lccc}
-		\hline \hline 
-		\textbf{Task} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.1$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.2$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=1$}\\ \hline \hline %\hhline{======}
-	    Semantic Anlg. & 79.07 & 78.13 & 73.25 \\
-	    Syntactic Anlg. & 66.61 & 65.17 & 45.58 \\ 
-	    \hline %\hhline{------}
-	    Word Sim. & 60.62 & 59.11 & 48.94 \\
-	    \hline %\hhline{------}
-	    Sentiment Anly. & 80.41 & 79.55 & 79.84 \\ \hline %\hhline{------}
-	    Question Clf. & 84.60 & 85.00 & 84.20 \\ \hline %\hhline{------}
-	    Sports News & 96.11 & 95.73 & 95.73 \\
-	    Religion News & 85.89 & 87.43 & 88.55 \\
-	    Comput. News & 81.42 & 81.03 & 79.74 \\\hline
-	    Interp.$^+_{n_{min}=5}$ & 36.88 & 41.22 & 54.28 \\
-	    Interp.$^-_{n_{min}=5}$ & 38.47 & 44.79 & 58.50 \\
-	    Interp$^+_{n_{min}=10}$ & 22.41 & 24.17 & 34.07 \\
-	    Interp.$^-_{n_{min}=10}$ & 22.49 & 23.89 & 35.43 \\\hline
-	    Gender B.$_{reduced}$ & 0.0470 & 0.0403 & 0.0441 \\
-	    Gender B.$_{debiased}$ & 0.0168 & 0.0122 & 0.0148 \\ 
+% \begin{table}
+%     \centering
+% 	\begin{tabular}{lccc}
+% 		\hline \hline 
+% 		\textbf{Task} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.1$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.2$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=1$}\\ \hline \hline %\hhline{======}
+% 	    Semantic Anlg. & 79.07 & 78.13 & 73.25 \\
+% 	    Syntactic Anlg. & 66.61 & 65.17 & 45.58 \\ 
+% 	    \hline %\hhline{------}
+% 	    Word Sim. & 60.62 & 59.11 & 48.94 \\
+% 	    \hline %\hhline{------}
+% 	    Sentiment Anly. & 80.41 & 79.55 & 79.84 \\ \hline %\hhline{------}
+% 	    Question Clf. & 84.60 & 85.00 & 84.20 \\ \hline %\hhline{------}
+% 	    Sports News & 96.11 & 95.73 & 95.73 \\
+% 	    Religion News & 85.89 & 87.43 & 88.55 \\
+% 	    Comput. News & 81.42 & 81.03 & 79.74 \\\hline
+% 	    Interp.$^+_{n_{min}=5}$ & 36.88 & 41.22 & 54.28 \\
+% 	    Interp.$^-_{n_{min}=5}$ & 38.47 & 44.79 & 58.50 \\
+% 	    Interp$^+_{n_{min}=10}$ & 22.41 & 24.17 & 34.07 \\
+% 	    Interp.$^-_{n_{min}=10}$ & 22.49 & 23.89 & 35.43 \\\hline
+% 	    Gender B.$_{reduced}$ & 0.0470 & 0.0403 & 0.0441 \\
+% 	    Gender B.$_{debiased}$ & 0.0168 & 0.0122 & 0.0148 \\ 
 
-	    \hline \hline %\hhline{======}
-	\end{tabular}
-	\caption{ Results of Evaluation Tests for the Hybrid Gender and Interpretability Imparted Embeddings.}
-	\label{tab:gender_plus_wordnet}	
-\end{table}
+% 	    \hline \hline %\hhline{======}
+% 	\end{tabular}
+% 	\caption{ Results of Evaluation Tests for the Hybrid Gender and Interpretability Imparted Embeddings.}
+% 	\label{tab:gender_plus_wordnet}	
+% \end{table}
 
-Finally, we demonstrated the feasibility of the proposed approach for concurrent gender and interpretability imparting. To do this, we obtained a hybrid model where the first dimension was encoded with gender word-groups and the remaining 299 dimensions were bidirectionally imparted with word-groups extracted from WordNet. Evaluation on gender bias, interpretability and task performance were repeated on this hybrid model. We find that the hybrid embeddings perform similarly to WordNet-Bi in terms of interpretability and task performance, for all evaluations and for all $k^w$ (Table \ref{tab:gender_plus_wordnet}). We also find that the hybrid embeddings perform similarly to gender-imparted embeddings in gender bias evaluations (Table \ref{tab:gender_plus_wordnet}). These results indicate that the proposed bidirectional imparting method enables gender debiasing and interpretability enhancement simultaneously in embedding models without compromising task performance.
+% We demonstrate the feasibility of \proposedmethod{} for concurrent gender and interpretability imparting. To do this, we obtained a hybrid model where the first dimension was encoded with gender word-groups and the remaining 299 dimensions were bidirectionally imparted with word-groups extracted from WordNet. Evaluation on gender bias, interpretability and task performance were repeated on this hybrid model. Table \ref{tab:gender_plus_wordnet} shows the evaluation results. Hybrid model performs similarly to only WordNet imparted \proposedmethod{} (Section \ref{sec:interp_eval} and \ref{sec:sem_structure}) in interpretability and task performance evaluations, and performs similarly to only gender imparted \proposedmethod{} (Section \ref{sec:intrinsic_bias}) in gender bias evaluations. These results indicate that \proposedmethod{} enables gender debiasing and interpretability enhancement simultaneously in embedding models without compromising task performance.
 
 \end{document}
