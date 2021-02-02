@@ -25,7 +25,7 @@
 \usepackage{microtype}
 
 % \aclfinalcopy % Uncomment this line for the final submission
-%\def\aclpaperid{***} %  Enter the acl Paper ID here
+\def\aclpaperid{2176} %  Enter the acl Paper ID here
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -82,8 +82,8 @@
                     \hspace{1cm}\arabic{notecounter} $<<<$
                     ##1: ##2
                     $>>>$\hspace{1cm}}}}}
-\enoteson
-% \enotesoff
+% \enoteson
+\enotesoff
 
 %\def\proposedmethod{ImpBi}
 \def\proposedmethod{BiImp}
@@ -93,8 +93,6 @@
 \maketitle
 \begin{abstract}
   Word embeddings
-  %, which enable mapping of semantic properties of words
-  %into a dense vector space,
   generally suffer from poor interpretability -- a general
   deficiency in many neural learning models.
   Here, we propose \emph{bidirectional imparting} or
@@ -150,7 +148,7 @@ Embeddings can also be used to investigate how differently/similarly concepts ar
 
 \begin{figure}
     \centering
-    \includegraphics[width=7.5cm]{Figures/impart_figure.pdf}
+    \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
     \caption{\proposedmethod{} improves interpretability in both of the embedding directions by forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
     \label{fig:bi_imp}
 \end{figure}
@@ -843,41 +841,6 @@ of debiasing methods.
 \end{table}
 
 
-
-\subsection{Hybrid Gender and Interpretability Imparted Embeddings}
-
-\begin{table}
-    \centering
-	\begin{tabular}{lccc}
-		\hline \hline 
-		\textbf{Task} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.1$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=0.2$} & \textbf{$\setlength{\thickmuskip}{0mu}k^w=1$}\\ \hline \hline %\hhline{======}
-	    Semantic Anlg. & 79.07 & 78.13 & 73.25 \\
-	    Syntactic Anlg. & 66.61 & 65.17 & 45.58 \\ 
-	    \hline %\hhline{------}
-	    Word Sim. & 60.62 & 59.11 & 48.94 \\
-	    \hline %\hhline{------}
-	    Sentiment Anly. & 80.41 & 79.55 & 79.84 \\ \hline %\hhline{------}
-	    Question Clf. & 84.60 & 85.00 & 84.20 \\ \hline %\hhline{------}
-	    Sports News & 96.11 & 95.73 & 95.73 \\
-	    Religion News & 85.89 & 87.43 & 88.55 \\
-	    Comput. News & 81.42 & 81.03 & 79.74 \\\hline
-	    Interp.$^+_{n_{min}=5}$ & 36.88 & 41.22 & 54.28 \\
-	    Interp.$^-_{n_{min}=5}$ & 38.47 & 44.79 & 58.50 \\
-	    Interp$^+_{n_{min}=10}$ & 22.41 & 24.17 & 34.07 \\
-	    Interp.$^-_{n_{min}=10}$ & 22.49 & 23.89 & 35.43 \\\hline
-	    Gender B.$_{reduced}$ & 0.0470 & 0.0403 & 0.0441 \\
-	    Gender B.$_{debiased}$ & 0.0168 & 0.0122 & 0.0148 \\ 
-
-	    \hline \hline %\hhline{======}
-	\end{tabular}
-	\caption{ Results of Evaluation Tests for the Hybrid Gender and Interpretability Imparted Embeddings.}
-	\label{tab:gender_plus_wordnet}	
-\end{table}
-
-We demonstrate the feasibility of \proposedmethod{} for concurrent gender and interpretability imparting. To do this, we obtained a hybrid model where the first dimension was encoded with gender word-groups and the remaining 299 dimensions were bidirectionally imparted with word-groups extracted from WordNet. Evaluation on gender bias, interpretability and task performance were repeated on this hybrid model. Table \ref{tab:gender_plus_wordnet} shows the evaluation results. Hybrid model performs similarly to only WordNet imparted \proposedmethod{} (Section \ref{sec:interp_eval} and \ref{sec:sem_structure}) in interpretability and task performance evaluations, and performs similarly to only gender imparted \proposedmethod{} (Section \ref{sec:intrinsic_bias}) in gender bias evaluations. These results indicate that \proposedmethod{} enables gender debiasing and interpretability enhancement simultaneously in embedding models without compromising task performance.
-
-
-
 \section{Conclusion} \label{sec:concl}
 
 In this study, we introduced \proposedmethod{}, a new method for enhancing
@@ -931,53 +894,53 @@ reducing biases and stereotypes present in word embeddings.
 \bibliographystyle{acl_natbib}
 
 
-\clearpage
+% \clearpage
 
-\appendix
+% \appendix
 
-\section{Appendices}
-
-
-
-\subsection{Lexical Resources} 
-\label{app:lexical_resources}
-
-\begin{table*}
-    \centering
-	\begin{tabular}{lcccc}
-	    \hline \hline
-         \multirow{2}{*}{\textbf{Word Counts}} & \multicolumn{2}{c}{\textbf{Roget's Thesarus}}  & \multicolumn{2}{c}{\textbf{WordNet}} \\
-         & \textbf{(300 grp.)} & \textbf{(600 grp.)} & \textbf{(300 grp.)} & \textbf{(600 grp.)} \\ \hline \hline %\hhline{====}
-         Total & 20978 & 40350 & 26964 & 18965 \\ 
-         Unique & 12289 & 19870 & 18123 & 13853 \\
-         Average & 69.9$\pm$53.7 & 67.3$\pm$54.6 & 89.9$\pm$74.2 & 31.6$\pm$15.9 \\ \hline \hline %\hhline{====} 
-	\end{tabular}
-	\caption{Summary statistics of the word-group datasets}
-	\label{tab:roget_vs_wordnet}
-\end{table*}
-
-In \citet{senel20impart}, Roget's Thesaurus \citep{Roget2008thesaurus} was designated as an external resource.
-Here, in addition to Roget's Thesaurus, we also investigate  WordNet \citep{miller95wordnet} to extract semantic word-groups.
-In order to extract a specific number of word-groups from WordNet, we partitioned the hierarchical structure starting from the root node, similar to the approach followed in \citet{senel20impart} for Roget's Thesaurus. We followed an iterative approach, where the largest node was divided to its hyponyms in each iteration. Node size was taken as the number of unique words descending from a node after filtering based on the vocabulary extracted from Wikipedia. We discarded the nodes with size less than $\lambda_{min}^w$. Iterations were stopped when the number of nodes exceeded the desired word-group count. Note that the desired word-group count may not be achieved if $\lambda_{min}^w$ is selected too large.
-The groups with the smallest number of member words are discarded to achieve desired word-group.
-
-\enote{ks}{In the paragraph below and in Table \ref{tab:roget_vs_wordnet} we talk about 300 groups that are used for unidirectional imparting for the comparison experiments. This is not mentioned in the paper (just to make sure if this is okay!)}
-We take $\lambda_{min}^w = 25$ and $\lambda_{min}^w = 15$ for 300 and 600 WordNet word groups, respectively.
-Table \ref{tab:roget_vs_wordnet} summarizes the statistics for the constructed word-groups. 
-
-% Please note that our method uses external resources only to select category labels which will be designated as the separate dimensions of the word embedding space. There is no explicit use of knowledge regarding similarity of words that belong each selected category.
+% \section{Appendices}
 
 
+
+% \subsection{Lexical Resources} 
+% \label{app:lexical_resources}
+
+% \begin{table*}
+%     \centering
+% 	\begin{tabular}{lcccc}
+% 	    \hline \hline
+%          \multirow{2}{*}{\textbf{Word Counts}} & \multicolumn{2}{c}{\textbf{Roget's Thesarus}}  & \multicolumn{2}{c}{\textbf{WordNet}} \\
+%          & \textbf{(300 grp.)} & \textbf{(600 grp.)} & \textbf{(300 grp.)} & \textbf{(600 grp.)} \\ \hline \hline %\hhline{====}
+%          Total & 20978 & 40350 & 26964 & 18965 \\ 
+%          Unique & 12289 & 19870 & 18123 & 13853 \\
+%          Average & 69.9$\pm$53.7 & 67.3$\pm$54.6 & 89.9$\pm$74.2 & 31.6$\pm$15.9 \\ \hline \hline %\hhline{====} 
+% 	\end{tabular}
+% 	\caption{Summary statistics of the word-group datasets}
+% 	\label{tab:roget_vs_wordnet}
+% \end{table*}
+
+% In \citet{senel20impart}, Roget's Thesaurus \citep{Roget2008thesaurus} was designated as an external resource.
+% Here, in addition to Roget's Thesaurus, we also investigate  WordNet \citep{miller95wordnet} to extract semantic word-groups.
+% In order to extract a specific number of word-groups from WordNet, we partitioned the hierarchical structure starting from the root node, similar to the approach followed in \citet{senel20impart} for Roget's Thesaurus. We followed an iterative approach, where the largest node was divided to its hyponyms in each iteration. Node size was taken as the number of unique words descending from a node after filtering based on the vocabulary extracted from Wikipedia. We discarded the nodes with size less than $\lambda_{min}^w$. Iterations were stopped when the number of nodes exceeded the desired word-group count. Note that the desired word-group count may not be achieved if $\lambda_{min}^w$ is selected too large.
+% The groups with the smallest number of member words are discarded to achieve desired word-group.
+
+% \enote{ks}{In the paragraph below and in Table \ref{tab:roget_vs_wordnet} we talk about 300 groups that are used for unidirectional imparting for the comparison experiments. This is not mentioned in the paper (just to make sure if this is okay!)}
+% We take $\lambda_{min}^w = 25$ and $\lambda_{min}^w = 15$ for 300 and 600 WordNet word groups, respectively.
+% Table \ref{tab:roget_vs_wordnet} summarizes the statistics for the constructed word-groups. 
+
+% % Please note that our method uses external resources only to select category labels which will be designated as the separate dimensions of the word embedding space. There is no explicit use of knowledge regarding similarity of words that belong each selected category.
 
 
 
 
 
 
-\subsection{Training Parameters}
-\label{app:training_parameters}
 
- For the training all imparted models and the original word2vec model, we used \verb|VOCAB_MIN_COUNT| $=100$, \verb|MAX_ITER| $=15$, \verb|WINDOW_SIZE| $=8$, \verb|NEGATIVE| $=15$, \verb|SAMPLE| $=10^{-4}$.
+
+% \subsection{Training Parameters}
+% \label{app:training_parameters}
+
+%  For the training all imparted models and the original word2vec model, we used \verb|VOCAB_MIN_COUNT| $=100$, \verb|MAX_ITER| $=15$, \verb|WINDOW_SIZE| $=8$, \verb|NEGATIVE| $=15$, \verb|SAMPLE| $=10^{-4}$.
  
  
  
@@ -985,50 +948,49 @@ Table \ref{tab:roget_vs_wordnet} summarizes the statistics for the constructed w
  
  
  
- \subsection{Comparison of Imparted Embeddings}
-\label{app:impart_comparison}
+%  \subsection{Comparison of Imparted Embeddings}
+% \label{app:impart_comparison}
 
 
-\begin{figure*}
-	\centering
-	\includegraphics[width=16cm]{Figures/interpretability_glove_vs_word2vec.pdf}
-	\caption{Interpretability scores in the positive direction $(IS^+)$ using $n_{min}=5$ (top row) and $n_{min}=10$ (bottom row) for unidirectionally imparted GloVe (left column) and word2vec (right column) algorithms for $k^g \in [0.0005,0.05]$ and $k^w \in [0.025,1.00]$, respectively. Interpretability scores for original embeddings and a random baseline are displayed for comparison as orange and green dashed lines, respectively.}
-	\label{fig:g_vs_w2v}
-\end{figure*}
+% % \begin{figure*}
+% % 	\centering
+% % 	\includegraphics[width=16cm]{Figures/interpretability_glove_vs_word2vec.pdf}
+% % 	\caption{Interpretability scores in the positive direction $(IS^+)$ using $n_{min}=5$ (top row) and $n_{min}=10$ (bottom row) for unidirectionally imparted GloVe (left column) and word2vec (right column) algorithms for $k^g \in [0.0005,0.05]$ and $k^w \in [0.025,1.00]$, respectively. Interpretability scores for original embeddings and a random baseline are displayed for comparison as orange and green dashed lines, respectively.}
+% % 	\label{fig:g_vs_w2v}
+% % \end{figure*}
 
-\enote{KS}{The comparisons in the paragraph below (unidirectional Glove vs unidirectional word2vec) are not mentioned anywhere in the paper. (just to make sure if this is okay!)}
-Figure \ref{fig:g_vs_w2v} presents the interpretability levels of the unidirectionally imparted GloVe ($k^g \in [0.0005,0.05]$) and word2vec ($k^w \in [0.025,1.00]$) embeddings for $n_{min} = 5$ and $n_{min} = 10$, along with original embeddings and a random baseline. We can see that for both algorithms, imparting substantially improves interpretability. While interpretability of the imparted GloVe embedding does not increase for $k^g$ values beyond 0.03, that for the imparted word2vec embedding is gradually enhanced up to $k^w=1$. Note that the original word2vec embedding has relatively limited interpretability compared to the GloVe embedding.
-Yet, for larger $k^w$, interpretability level of the imparted word2vec embedding improves, even surpassing GloVe. 
-%These results indicate the viability of the imparting method for the online word2vec algorithm in order to improve interpretability in a memory-efficient and scalable setting.
+% % \enote{KS}{The comparisons in the paragraph below (unidirectional Glove vs unidirectional word2vec) are not mentioned anywhere in the paper. (just to make sure if this is okay!)}
+% % Figure \ref{fig:g_vs_w2v} presents the interpretability levels of the unidirectionally imparted GloVe ($k^g \in [0.0005,0.05]$) and word2vec ($k^w \in [0.025,1.00]$) embeddings for $n_{min} = 5$ and $n_{min} = 10$, along with original embeddings and a random baseline. We can see that for both algorithms, imparting substantially improves interpretability. While interpretability of the imparted GloVe embedding does not increase for $k^g$ values beyond 0.03, that for the imparted word2vec embedding is gradually enhanced up to $k^w=1$. Note that the original word2vec embedding has relatively limited interpretability compared to the GloVe embedding.
+% % Yet, for larger $k^w$, interpretability level of the imparted word2vec embedding improves, even surpassing GloVe. 
 
-% \begin{SCfigure*}
-\begin{figure*}
-	\centering
-	\includegraphics[width=16cm]{Figures/interpretability_wordnet_vs_roget.pdf}
-	\caption{Positive (top) and negative (bottom)
-          direction interpretability scores for
-          unidirectionally imparted word2vec embeddings
-          using Roget's Thesaurus (Roget-Uni) and WordNet
-          (WordNet-Uni) and their bidirectionally imparted
-          versions (\proposedmethod{} (Roget), \proposedmethod{} (WordNet)) for $k^w \in [0.025,1.00]$ along with the original word2vec embedding and a random baseline for $n_{min} = 5$ (left) and $n_{min} = 10$ (right).}
-	\label{fig:wordnet_vs_roget}
-\end{figure*}
-% \end{SCfigure*}
+% % \begin{SCfigure*}
+% \begin{figure*}
+% 	\centering
+% 	\includegraphics[width=16cm]{Figures/interpretability_wordnet_vs_roget.pdf}
+% 	\caption{Positive (top) and negative (bottom)
+%           direction interpretability scores for
+%           unidirectionally imparted word2vec embeddings
+%           using Roget's Thesaurus (Roget-Uni) and WordNet
+%           (WordNet-Uni) and their bidirectionally imparted
+%           versions (\proposedmethod{} (Roget), \proposedmethod{} (WordNet)) for $k^w \in [0.025,1.00]$ along with the original word2vec embedding and a random baseline for $n_{min} = 5$ (left) and $n_{min} = 10$ (right).}
+% 	\label{fig:wordnet_vs_roget}
+% \end{figure*}
+% % \end{SCfigure*}
 
-% \begin{SCfigure*}
-\begin{figure*}
-	\centering
-	\includegraphics[width=16cm]{Figures/similarity_and_analogy.pdf}
-	\caption{Performance of unidirectionally imparted word2vec embeddings using Roget's Thesaurus (Roget-Uni) and WordNet (WordNet-Uni) and their bidirectionally imparted versions (Roget-Bi, WordNet-Bi) for $k^w \in [0.025, 0.500]$ along with the original word2vec embedding on word similarity (left) and word analogy (right) tests. Word similarity results are presented as the average correlations from 13 different word similarity test sets.}
-	\label{fig:sim_and_analogy}
-\end{figure*}
-% \end{SCfigure*}
+% % \begin{SCfigure*}
+% \begin{figure*}
+% 	\centering
+% 	\includegraphics[width=16cm]{Figures/similarity_and_analogy.pdf}
+% 	\caption{Performance of unidirectionally imparted word2vec embeddings using Roget's Thesaurus (Roget-Uni) and WordNet (WordNet-Uni) and their bidirectionally imparted versions (Roget-Bi, WordNet-Bi) for $k^w \in [0.025, 0.500]$ along with the original word2vec embedding on word similarity (left) and word analogy (right) tests. Word similarity results are presented as the average correlations from 13 different word similarity test sets.}
+% 	\label{fig:sim_and_analogy}
+% \end{figure*}
+% % \end{SCfigure*}
 
-Figure \ref{fig:wordnet_vs_roget} shows interpretability values of the unidirectionally and bidirectionally imparted word2vec embeddings for $n_{min} = 5$ and $n_{min} = 10$ in both of the positive and negative directions. It can be seen that bidirectional imparting achieves considerably improved interpretability compared to unidirectional imparting in the negative direction with minimal compromise in the positive direction.
+% Figure \ref{fig:wordnet_vs_roget} shows interpretability values of the unidirectionally and bidirectionally imparted word2vec embeddings for $n_{min} = 5$ and $n_{min} = 10$ in both of the positive and negative directions. It can be seen that bidirectional imparting achieves considerably improved interpretability compared to unidirectional imparting in the negative direction with minimal compromise in the positive direction.
 
-% Imparting improves interpretability in a controllable manner by offering a tuning parameter $k^w$, that adjusts how heavily the optimization objective weights interpretability against the original goal of capturing semantic relations among words. Naturally, emphasis on interpretability for relatively large values of $k^w$ might lead to suboptimal representation of word semantics. In order to investigate this, we evaluated the imparted embeddings on the intrinsic word analogy \citep{mikolov13word2vec_b} and word similarity \citep{faruqui14communityEval} tests. For analogy tests we use Google analogy dataset\footnote{http://download.tensorflow.org/data/questions-words.txt}. For brevity, word similarity results were averaged across 13 datasets\footnote{Word similarity datasets are: WS-353-ALL, SIMLEX-999, VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130, MEN-TR-3k, RG-65, MTurk-771, WS-353-SIM, MC-30, MTurk-287} on which the evaluations were performed.
+% % Imparting improves interpretability in a controllable manner by offering a tuning parameter $k^w$, that adjusts how heavily the optimization objective weights interpretability against the original goal of capturing semantic relations among words. Naturally, emphasis on interpretability for relatively large values of $k^w$ might lead to suboptimal representation of word semantics. In order to investigate this, we evaluated the imparted embeddings on the intrinsic word analogy \citep{mikolov13word2vec_b} and word similarity \citep{faruqui14communityEval} tests. For analogy tests we use Google analogy dataset\footnote{http://download.tensorflow.org/data/questions-words.txt}. For brevity, word similarity results were averaged across 13 datasets\footnote{Word similarity datasets are: WS-353-ALL, SIMLEX-999, VERB-143, SimVerb-3500, WS-353-REL, RW-STANFORD, YP-130, MEN-TR-3k, RG-65, MTurk-771, WS-353-SIM, MC-30, MTurk-287} on which the evaluations were performed.
 
-Figure \ref{fig:sim_and_analogy} presents the performances of the embeddings on word similarity and word analogy tests. It can be observed that performance on word similarity and analogy tests decreases with increasing $k^w$.  However, for bidirectional imparting of WordNet word-groups, performance is on par with original embeddings for $k^w \leq 0.2$. Taken together, results in Figs. \ref{fig:wordnet_vs_roget} and \ref{fig:sim_and_analogy} suggest that bidirectional imparting of WordNet word-groups at relatively low $k_w$ is the optimal setting for word2vec. While WordNet word-groups somewhat reduce interpretability compared to Roget word-groups in bidirectional setting, they are much better at preserving the semantic structure of the embedding space as suggested by similarity and analogy tests.
+% Figure \ref{fig:sim_and_analogy} presents the performances of the embeddings on word similarity and word analogy tests. It can be observed that performance on word similarity and analogy tests decreases with increasing $k^w$.  However, for bidirectional imparting of WordNet word-groups, performance is on par with original embeddings for $k^w \leq 0.2$. Taken together, results in Figs. \ref{fig:wordnet_vs_roget} and \ref{fig:sim_and_analogy} suggest that bidirectional imparting of WordNet word-groups at relatively low $k_w$ is the optimal setting for word2vec. While WordNet word-groups somewhat reduce interpretability compared to Roget word-groups in bidirectional setting, they are much better at preserving the semantic structure of the embedding space as suggested by similarity and analogy tests.
  
  
  
@@ -1037,10 +999,10 @@ Figure \ref{fig:sim_and_analogy} presents the performances of the embeddings on 
  
  
  
- \subsection{Competing Methods}
- \label{app:competing_methods}
+%  \subsection{Competing Methods}
+%  \label{app:competing_methods}
  
- OIWE-IPG was trained on the same corpus as the word2vec embeddings using the default parameters reported in \citep{luo15online} \textcolor{black}{, yielding 300 dimensional vectors}. SOV and Parsimax that work on pretrained embeddings were performed on the original word2vec embeddings, again using suggested parameters in \citep{faruqui15sparse} and \citep{park17rotated}, \textcolor{black}{resulting in 1000 and 300 dimensional vectors, respectively.} For Word2Sense, we used the publicly available \textcolor{black}{2250 dimensional} pretrained vectors\footnote{https://github.com/abhishekpanigrahi1996/Word2Sense} due to computational restrictions. \textcolor{black}{For POLAR, we trained two different versions. First, we obtained 1465 dimensional POLAR-large embeddings that were reported in \citep{mathew20polar}, by applying polar transformation on Google's pretrained word2vec embeddings\footnote{https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM} using all 1465 antonym pairs. Note that these embeddings were originally trained on a much larger corpus (Google News) with a substantially larger vocabulary (3 million) than our word2vec embeddings. Therefore, POLAR-large embeddings are considerably more expensive than our imparted embeddings in terms of computational and linguistic resources. Second, we obtained 500 dimensional POLAR-small embeddings that are more comparable to imparted embeddings in terms of model dimensionality and resource usage, by performing the polar transformation on our original word2vec embeddings using the default parameters\footnote{https://github.com/Sandipan99/POLAR}.} 
+%  OIWE-IPG was trained on the same corpus as the word2vec embeddings using the default parameters reported in \citep{luo15online} \textcolor{black}{, yielding 300 dimensional vectors}. SOV and Parsimax that work on pretrained embeddings were performed on the original word2vec embeddings, again using suggested parameters in \citep{faruqui15sparse} and \citep{park17rotated}, \textcolor{black}{resulting in 1000 and 300 dimensional vectors, respectively.} For Word2Sense, we used the publicly available \textcolor{black}{2250 dimensional} pretrained vectors\footnote{https://github.com/abhishekpanigrahi1996/Word2Sense} due to computational restrictions. \textcolor{black}{For POLAR, we trained two different versions. First, we obtained 1465 dimensional POLAR-large embeddings that were reported in \citep{mathew20polar}, by applying polar transformation on Google's pretrained word2vec embeddings\footnote{https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM} using all 1465 antonym pairs. Note that these embeddings were originally trained on a much larger corpus (Google News) with a substantially larger vocabulary (3 million) than our word2vec embeddings. Therefore, POLAR-large embeddings are considerably more expensive than our imparted embeddings in terms of computational and linguistic resources. Second, we obtained 500 dimensional POLAR-small embeddings that are more comparable to imparted embeddings in terms of model dimensionality and resource usage, by performing the polar transformation on our original word2vec embeddings using the default parameters\footnote{https://github.com/Sandipan99/POLAR}.} 
  
  
  
@@ -1049,50 +1011,50 @@ Figure \ref{fig:sim_and_analogy} presents the performances of the embeddings on 
  
  
 
-\subsection{Classification Tasks}
-\label{app:clf_tasks}
+% \subsection{Classification Tasks}
+% \label{app:clf_tasks}
 
-The classification tasks are described in detail below:
-\begin{itemize}
-    \item \textbf{Sentiment Analysis:} A sentence-level binary classification task using the Stanford Sentiment Treebank consisting of thousands of movie reviews \citep{socher13treebank} and their sentiment scores. The development and training sets in the original dataset were aggregated, and reviews with neutral scores were removed (i.e., scores between 0.4 and 0.6). The resulting dataset contained 7407 training and 1751 test samples.
+% The classification tasks are described in detail below:
+% \begin{itemize}
+%     \item \textbf{Sentiment Analysis:} A sentence-level binary classification task using the Stanford Sentiment Treebank consisting of thousands of movie reviews \citep{socher13treebank} and their sentiment scores. The development and training sets in the original dataset were aggregated, and reviews with neutral scores were removed (i.e., scores between 0.4 and 0.6). The resulting dataset contained 7407 training and 1751 test samples.
     
-    \item \textbf{Question Classification (TREC):} A question-level multinomial classification task using the TREC dataset \citep{li06learning} consisting of six different types of questions (person, location, entity, number, description, abbreviation). This dataset consisted of 5452 training and 500 test questions.
+%     \item \textbf{Question Classification (TREC):} A question-level multinomial classification task using the TREC dataset \citep{li06learning} consisting of six different types of questions (person, location, entity, number, description, abbreviation). This dataset consisted of 5452 training and 500 test questions.
     
-    \item \textbf{News Classification:} Following \citep{faruqui15sparse}, three news-level binary classification tasks were considered using the 20 Newsgroup dataset\footnote{http://qwone.com/~jason/20Newsgroups}. The following news topics were considered (training/test sample counts): 1) Religion: atheism vs christian (1079/716); 2) Sports: baseball vs hockey (1192/796); 3) Computers: IBM vs Mac (1162/775).
-\end{itemize}
+%     \item \textbf{News Classification:} Following \citep{faruqui15sparse}, three news-level binary classification tasks were considered using the 20 Newsgroup dataset\footnote{http://qwone.com/~jason/20Newsgroups}. The following news topics were considered (training/test sample counts): 1) Religion: atheism vs christian (1079/716); 2) Sports: baseball vs hockey (1192/796); 3) Computers: IBM vs Mac (1162/775).
+% \end{itemize}
 
-For these high-level NLP tasks, we took the average of the word vectors in input text (can be a sentence, question or news) as input features and trained an SVM classifier that was tuned using 5 fold cross-validation on the training sets. 
-
-
+% For these high-level NLP tasks, we took the average of the word vectors in input text (can be a sentence, question or news) as input features and trained an SVM classifier that was tuned using 5 fold cross-validation on the training sets. 
 
 
 
 
-\subsection{Performance of Gender Biased Embeddings}
 
-A potential risk of debiasing on gender-imparted models is undesirable loss of semantic structure in the embedding space that might compromise task performance. To rule out this risk, we evaluated the embeddings in the gender-bias experiments on intrinsic tests and downstream classification tasks. For the imparted and reduced embeddings, we averaged the results across $k^w$. Table \ref{tab:gender_performance_tests} shows that all the evaluated embeddings perform nearly as good as the original embeddings on all tasks, except a slightly reduced performance on computer news classification task. These results indicate that debiasing of gender-imparted embeddings successfully preserves semantic structure of the embedding space.
 
-\begin{table*}
-    \centering
-	\begin{tabular}{lcccccc}
-		\hline \hline 
-		\multirow{2}{*}{\textbf{Task}} & \multicolumn{3}{c}{\textbf{before debias}} & 
-		\multicolumn{3}{c}{\textbf{after debias}} \\
-		 & \textbf{word2vec} & \textbf{imparted} & \textbf{reduced} & \textbf{word2vec} & \textbf{imparted} & \textbf{reduced} \\ \hline \hline %\hhline{======}
-	    Sem. Anlg. & 79.87 & 79.00 $\pm$ 0.50 & 79.16 $\pm$ 0.50 & 78.65 & 78.92 $\pm$ 0.57 & 78.99 $\pm$ 0.61 \\
-	    Syn. Anlg. & 67.63 & 66.39 $\pm$ 0.99 & 66.48 $\pm$ 1.01 & 67.46 & 66.42 $\pm$ 0.96 & 66.43 $\pm$ 1.00 \\ 
-	    \hline %\hhline{------}
-	    Word Sim. & 60.68 & 60.08 $\pm$ 0.66 & 60.21 $\pm$ 0.52 & 60.64 & 60.12 $\pm$ 0.67 & 60.28 $\pm$ 0.53 \\
-	    \hline %\hhline{------}
-	    Sent. Anly. & 80.30 & 79.95 $\pm$ 0.36 & 79.94 $\pm$ 0.33 & 79.84 & 79.99 $\pm$ 0.37 & 79.98 $\pm$ 0.41 \\ \hline %\hhline{------}
-	    Quest. Clf. & 85.80 & 84.63 $\pm$ 0.59 & 86.00 $\pm$ 0.92 & 86.20 & 86.27 $\pm$ 0.74 & 86.03 $\pm$ 0.80 \\ \hline %\hhline{------}
-	    Sports News & 95.85 & 95.33 $\pm$ 0.27 & 95.34 $\pm$ 0.25 & 95.10 & 95.33 $\pm$ 0.27 & 95.33 $\pm$ 0.29 \\
-	    Relig. News & 87.01 & 86.19 $\pm$ 0.61 & 86.10 $\pm$ 0.57 & 86.03 & 86.24 $\pm$ 0.59 & 86.18 $\pm$ 0.59 \\
-	    Comp. News & 81.55 & 78.74 $\pm$ 0.84 & 78.73 $\pm$ 0.99 & 78.84 & 78.68 $\pm$ 0.83 & 78.63 $\pm$ 0.81 \\ \hline \hline %\hhline{======}
-	\end{tabular}
-	\caption{Results of embeddings from gender bias experiments on the performance evaluation tests. }
-	\label{tab:gender_performance_tests}
-\end{table*}
+% \subsection{Performance of Gender Biased Embeddings}
+
+% A potential risk of debiasing on gender-imparted models is undesirable loss of semantic structure in the embedding space that might compromise task performance. To rule out this risk, we evaluated the embeddings in the gender-bias experiments on intrinsic tests and downstream classification tasks. For the imparted and reduced embeddings, we averaged the results across $k^w$. Table \ref{tab:gender_performance_tests} shows that all the evaluated embeddings perform nearly as good as the original embeddings on all tasks, except a slightly reduced performance on computer news classification task. These results indicate that debiasing of gender-imparted embeddings successfully preserves semantic structure of the embedding space.
+
+% \begin{table*}
+%     \centering
+% 	\begin{tabular}{lcccccc}
+% 		\hline \hline 
+% 		\multirow{2}{*}{\textbf{Task}} & \multicolumn{3}{c}{\textbf{before debias}} & 
+% 		\multicolumn{3}{c}{\textbf{after debias}} \\
+% 		 & \textbf{word2vec} & \textbf{imparted} & \textbf{reduced} & \textbf{word2vec} & \textbf{imparted} & \textbf{reduced} \\ \hline \hline %\hhline{======}
+% 	    Sem. Anlg. & 79.87 & 79.00 $\pm$ 0.50 & 79.16 $\pm$ 0.50 & 78.65 & 78.92 $\pm$ 0.57 & 78.99 $\pm$ 0.61 \\
+% 	    Syn. Anlg. & 67.63 & 66.39 $\pm$ 0.99 & 66.48 $\pm$ 1.01 & 67.46 & 66.42 $\pm$ 0.96 & 66.43 $\pm$ 1.00 \\ 
+% 	    \hline %\hhline{------}
+% 	    Word Sim. & 60.68 & 60.08 $\pm$ 0.66 & 60.21 $\pm$ 0.52 & 60.64 & 60.12 $\pm$ 0.67 & 60.28 $\pm$ 0.53 \\
+% 	    \hline %\hhline{------}
+% 	    Sent. Anly. & 80.30 & 79.95 $\pm$ 0.36 & 79.94 $\pm$ 0.33 & 79.84 & 79.99 $\pm$ 0.37 & 79.98 $\pm$ 0.41 \\ \hline %\hhline{------}
+% 	    Quest. Clf. & 85.80 & 84.63 $\pm$ 0.59 & 86.00 $\pm$ 0.92 & 86.20 & 86.27 $\pm$ 0.74 & 86.03 $\pm$ 0.80 \\ \hline %\hhline{------}
+% 	    Sports News & 95.85 & 95.33 $\pm$ 0.27 & 95.34 $\pm$ 0.25 & 95.10 & 95.33 $\pm$ 0.27 & 95.33 $\pm$ 0.29 \\
+% 	    Relig. News & 87.01 & 86.19 $\pm$ 0.61 & 86.10 $\pm$ 0.57 & 86.03 & 86.24 $\pm$ 0.59 & 86.18 $\pm$ 0.59 \\
+% 	    Comp. News & 81.55 & 78.74 $\pm$ 0.84 & 78.73 $\pm$ 0.99 & 78.84 & 78.68 $\pm$ 0.83 & 78.63 $\pm$ 0.81 \\ \hline \hline %\hhline{======}
+% 	\end{tabular}
+% 	\caption{Results of embeddings from gender bias experiments on the performance evaluation tests. }
+% 	\label{tab:gender_performance_tests}
+% \end{table*}
 
 
 
