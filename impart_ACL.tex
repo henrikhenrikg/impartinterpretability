@@ -126,7 +126,31 @@ fairness of classification.
 \begin{figure}[!h]
     \centering
     \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
-    \caption{\proposedmethod{} improves interpretability in
+    \caption{Illustration of  ``bidirectional imparting'',
+      the main idea underlying \proposedmethod{}.
+      The method increases interpretability
+of word embeddings
+      by linking
+      embedding dimensions to concepts. The concepts are
+      taken from a conceptual
+      resource that provides concepts along with word sets
+      that are associated with them. We use WordNet in this
+      paper.
+      \proposedmethod{} ``imparts'' two concepts to each
+      embedding dimension, one for the positive and one for
+      the negative direction. For example, the concepts
+      ``male'' and ``female'' are associated with positive
+      and negative directions of the polar dimension in the
+      figure. Imparting is achieved by modifying the
+      embedding training objective: during training, words associated with a
+      concept are constrained to have high (or low) values
+      on the dimension linked to the concept.
+As a result, the embedding vector of a word is directly interpretable:
+the value  of each coordinate can be seen as a
+weight that the associated concept (either the positively or
+the negatively associated concept) has in the representation of the
+meaning of the word.
+      \proposedmethod{} improves interpretability in
       both embedding directions by
       forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
     \label{fig:bi_imp}
