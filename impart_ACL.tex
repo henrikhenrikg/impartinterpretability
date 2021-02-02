@@ -123,6 +123,14 @@ fairness of classification.
 %as evaluated using intrinsic bias evaluations as well as fairness measurements for high level classification tasks.
 %Experiments are performed on the scalable \textit{word2vec} algorithm.
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
+    \caption{\proposedmethod{} improves interpretability in both of the embedding directions by forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
+    \label{fig:bi_imp}
+\end{figure}
+
+
 \section{Introduction}\label{sec:intro}
 
 \emph{Word embeddings} \citep{mikolov13word2vec_a,mikolov13word2vec_b,pennington14glove,bojanowski2017enriching}
@@ -145,13 +153,6 @@ Evolutionary linguists track historical changes in word meaning with embeddings 
 Recent studies suggest that embeddings  capture and quantify gender and ethnic biases in language \citep{bolukbasi16debiasing,garg18gender100years,caliskan17humanLikeBiases} and their evolution over time \citep{agarwal2019word}. 
 Embeddings can also be used to investigate how differently/similarly concepts are represented in different languages
 \citep{senel17crossLingual,senel18atlas}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
-    \caption{\proposedmethod{} improves interpretability in both of the embedding directions by forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
-    \label{fig:bi_imp}
-\end{figure}
 
 Despite a large body of work on improved word embeddings
 \citep{yu2017refining, celikyilmaz15enriching,
