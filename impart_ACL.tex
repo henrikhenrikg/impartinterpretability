@@ -92,30 +92,28 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Word embeddings
-  generally suffer from poor interpretability -- a general
-  deficiency in many neural models.
-  Here, we propose \emph{bidirectional imparting} or
-\emph{\proposedmethod} (read as ``bimp''), a generalized method for aligning embedding
-dimensions with concepts during the embedding learning
-phase. \proposedmethod{} makes  dimensions interpretable
-while preserving the semantic structure of the embedding space.
- \proposedmethod{} separately utilizes both directions of
- a vector space dimension: each direction can be assigned
- to a different concept. This increases the number of
- concepts that can be represented in the embedding space.
- Our experimental results demonstrate the interpretability
-of \proposedmethod{} embeddings; at the same time,
-performance in intrinsic and extrinsic evaluation is
-comparable to baseline embeddings.
-We also use \proposedmethod{} 
-to reduce gender bias in word embeddings
-by encoding gender-opposite concepts (e.g., male-female) in
-a single embedding dimension.
-We then show that combining 
-baseline debiasing methods
-with \proposedmethod{} increases debiasing performance and
-fairness of classification.
+  Word embeddings generally suffer from poor
+  interpretability -- a general deficiency in many neural
+  models.  Here, we propose \emph{bidirectional imparting}
+  or \emph{\proposedmethod} (read as ``bimp''), a
+  generalized method for aligning embedding dimensions with
+  concepts during the embedding learning
+  phase. \proposedmethod{} makes dimensions interpretable
+  while preserving the semantic structure of the embedding
+  space.  \proposedmethod{} separately utilizes both
+  directions of a vector space dimension: each direction can
+  be assigned to a different concept. This increases the
+  number of concepts that can be represented in the
+  embedding space.  Our experimental results demonstrate the
+  interpretability of \proposedmethod{} embeddings; at the
+  same time, performance in intrinsic and extrinsic
+  evaluation is comparable to baseline embeddings.  We also
+  use \proposedmethod{} to reduce gender bias in word
+  embeddings by encoding gender-opposite concepts (e.g.,
+  male-female) in a single embedding dimension.  We then
+  show that combining baseline debiasing methods with
+  \proposedmethod{} increases debiasing performance and
+  fairness of classification.
 \end{abstract}
 
 
@@ -126,33 +124,38 @@ fairness of classification.
 \begin{figure}[!h]
     \centering
     \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
-    \caption{Illustration of  ``bidirectional imparting'',
-      the main idea underlying \proposedmethod{}.
-      The method increases interpretability
-of word embeddings
-      by linking
-      embedding dimensions to concepts. The concepts are
-      taken from a conceptual
-      resource that provides concepts along with word sets
-      that are associated with them. We use WordNet in this
-      paper.
-      \proposedmethod{} ``imparts'' two concepts to each
-      embedding dimension, one for the positive and one for
-      the negative direction. For example, the concepts
-      ``male'' and ``female'' are associated with positive
-      and negative directions of the polar dimension in the
+    \caption{
+      Illustration of bidirectional imparting, the main
+      idea underlying \proposedmethod{}.  The method
+      increases interpretability of word embeddings by
+      linking embedding dimensions to concepts. The concepts
+      are taken from a conceptual resource that provides
+      concepts along with word sets that are associated with
+      them.  \proposedmethod{}
+      ``imparts'' two concepts to each embedding dimension,
+      one for the positive, one for the negative
+      direction. E.g., the concepts ``male'' and
+      ``female'' are associated with positive and negative
+      directions of the polar dimension in the
       figure. Imparting is achieved by modifying the
-      embedding training objective: during training, words associated with a
-      concept are constrained to have high (or low) values
-      on the dimension linked to the concept.
-As a result, the embedding vector of a word is directly interpretable:
-the value  of each coordinate can be seen as a
-weight that the associated concept (either the positively or
-the negatively associated concept) has in the representation of the
-meaning of the word.
-      \proposedmethod{} improves interpretability in
-      both embedding directions by
-      forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
+      embedding training objective: during training, words
+      associated with a concept are constrained to have high
+      (or low) values on the dimension linked to the
+      concept.  As a result, the embedding vector of a word
+      is directly interpretable: the value of each
+      coordinate can be seen as a weight that the associated
+      concept (positively or negatively
+      associated concept) has in the representation of the
+      meaning of the word.  We study both polar dimensions
+      (positive/negative concepts are opposites) and
+      nonpolar dimensions (positive/negative concepts are
+      unrelated).  Solid arrow: word from resource. Dashed
+      arrow: word not from the resource inferred to be
+      related to the concept.
+We show that \proposedmethod{} increases interpretability
+without impacting task performance and that it supports more
+effective debiasing.
+    }
     \label{fig:bi_imp}
 \end{figure}
 
@@ -166,7 +169,10 @@ of words.
 Although the remarkable performance of transformer based
 architectures
 \citep{vaswani17transformers,devlin19BERT,Radford19GPT2} on
-many NLP tasks has increased the use use of contextualized embeddings, static word embeddings are still useful in a broad range of applications involving lexical semantics. 
+many NLP tasks has increased the use use of contextualized
+embeddings, static word embeddings are still useful in a
+broad range of applications involving lexical semantics as
+we will discuss now.
 
 \clearpage
 
@@ -217,30 +223,32 @@ ignored.
 %beyond GloVe  was not
 %investigated. 
 
-\enote{hs}{it's good to metnion online below, bu tthen yoou
-  have to say in the paper why online is beter than offline}
-  \enote{ks}{Is it good now?}
-
 In this paper, we introduce \textit{\proposedmethod{}} (read
-as ``bimp''), a generalized imparting approach that is capable of bidirectional imparting and online learning, hence more efficient and adaptable to new training data. 
+as ``bimp''), a generalized imparting approach that is
+capable of bidirectional imparting and online learning,
+hence more efficient and adaptable to new training data.
 \proposedmethod{} utilizes both directions along each
 dimension of the vector space separately to encode two
-different concepts. The two concepts  can be chosen arbitrarily or chosen as opposites (e.g., \textit{good} -- \textit{bad}, \textit{male} -- \textit{female}) as a special case (see Figure \ref{fig:bi_imp}), providing a more efficient use of the embedding space while increasing encoding flexibility. 
-We demonstrate \proposedmethod{} by modifying the word2vec
-skip-gram model
+different concepts. The two concepts can be chosen
+arbitrarily or chosen as opposites (e.g., \textit{good} --
+\textit{bad}, \textit{male} -- \textit{female}) as a special
+case (see Figure \ref{fig:bi_imp}), providing a more
+efficient use of the embedding space while increasing
+encoding flexibility.  We demonstrate \proposedmethod{} by
+modifying the word2vec skip-gram model
 \citep{mikolov13word2vec_a,mikolov13word2vec_b}; concepts
-are selected from Roget's Thesaurus and WordNet.
-A hyperparameter an be tuned to achieve a good tradeoff
-between interpretability on the one hand and
-preservation of semantic structure on the other.
-We perform comprehensive experiments  and demonstrate that
-interpretability of word embeddings improves while
-performance stays about the same.
-Inspired by  \citet{bolukbasi16debiasing}, we also
+are selected from Roget's Thesaurus and WordNet.  A
+hyperparameter an be tuned to achieve a good tradeoff
+between interpretability on the one hand and preservation of
+semantic structure on the other.  We perform comprehensive
+experiments and demonstrate that interpretability of word
+embeddings improves while performance stays about the same.
+Inspired by \citet{bolukbasi16debiasing}, we also
 demonstrate that \proposedmethod{} can concentrate gender
-information in a single embedding dimension, the gender dimension, as a continuum. 
-This supports efficient capture of gender bias 
-and debiasing through removal of the gender dimension.
+information in a single embedding dimension, the gender
+dimension, as a continuum.  This supports efficient capture
+of gender bias and debiasing through removal of the gender
+dimension.
 
 Our main contributions are as follows:
 \begin{itemize}
@@ -286,7 +294,7 @@ In a recent study \citep{senel20impart}, an imparting method
 was proposed in which individual dimensions of the model
 were aligned with concepts defined a priori based on an
 external resource.
-The authors demonstrated the effectiveness of their method only for the off-line GloVe method, and only the positive direction of each dimension was matched up with a concept. 
+The authors demonstrated the effectiveness of their method only for the offline GloVe method, and only the positive direction of each dimension was matched up with a concept. 
 %This unidirectional imparting limits the representational capacity of the resulting embedding for semantic concepts, and does not allow for continuous encoding of opposing concepts. 
 
 \section{Methods} \label{sec:methods}
@@ -294,12 +302,11 @@ The authors demonstrated the effectiveness of their method only for the off-line
 \subsection{Imparting}
 
 Our work builds on \citep{senel20impart}, which introduces a
-unidirectional imparting method that
-enhances interpretability in GloVe word
-embeddings by forcing words related to predefined concepts
-to project more strongly onto individual embedding
-dimensions.
-To achieve this, they modify GloVe's cost as follows:
+unidirectional imparting method that enhances
+interpretability in GloVe word embeddings by forcing words
+related to predefined concepts to project more strongly onto
+individual embedding dimensions.  To achieve this, they
+modify GloVe's cost as follows:
 
 \begin{align}
 \begin{split}
@@ -422,7 +429,7 @@ propose a new directional interpretability score:
 \end{split}
 \end{equation}
 
-In Eq. \ref{eq:interpretability_new}, $IS^+_{l,k}$ and
+In Eq.\ \ref{eq:interpretability_new}, $IS^+_{l,k}$ and
 $IS^-_{l,k}$ represent the interpretability scores in the
 positive and negative directions of the $l^{th}$ dimension
 ($l \in \{1,2,...,D\}$, $D=dim(\vec{w})$) for the $k^{th}$
@@ -498,7 +505,7 @@ provided by
 assessment.\footnote{https://github.com/tolga-b/debiaswe/blob/master/data/professions.json\\ Professions
   that were not in our vocabulary were filtered out.} 
 We calculate the correlation $B^{g}$ between stereotypical biases $b^s$  and the biases
-$b^{direct}$  based on Eq. \ref{eq:direct_bias}:
+$b^{direct}$  based on Eq.\ \ref{eq:direct_bias}:
 \begin{equation}
     B^{g} = \mbox{corr}(b^s,b^{direct})
     \label{eq:bg}
@@ -569,7 +576,7 @@ $\text{TPR}_{\text{gap}}$
 is the
 difference in accuracy between the two genders of
 detecting the presence (resp.\ absence) of an occupation.
-We interpret this as a measure of the gender bias of the
+We interpret this as a measure of the gender fairness of the
 word embeddings for $o$.
   We compute
   $\text{TPR}_{\text{gap}}$/$\text{TNR}_{\text{gap}}$ as the average over all
