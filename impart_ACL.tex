@@ -94,7 +94,7 @@
 \begin{abstract}
   Word embeddings
   generally suffer from poor interpretability -- a general
-  deficiency in many neural learning models.
+  deficiency in many neural models.
   Here, we propose \emph{bidirectional imparting} or
 \emph{\proposedmethod} (read as ``bimp''), a generalized method for aligning embedding
 dimensions with concepts during the embedding learning
@@ -126,7 +126,9 @@ fairness of classification.
 \begin{figure}[!h]
     \centering
     \includegraphics[width=7.5cm]{Figures/impart_figure_real.pdf}
-    \caption{\proposedmethod{} improves interpretability in both of the embedding directions by forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
+    \caption{\proposedmethod{} improves interpretability in
+      both embedding directions by
+      forcing words representing predefined concepts to have large and low values (solid arrows). Words that are related but not explicitly forced are also indirectly pushed (dashed arrows).}
     \label{fig:bi_imp}
 \end{figure}
 
